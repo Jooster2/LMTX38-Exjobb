@@ -1,0 +1,9 @@
+Set grid int x int
+Set starting pos
+Set ending pos
+
+Grid of cells
+	cell is class?
+		yes
+	cell holds position and whether it is an endpoint
+	
