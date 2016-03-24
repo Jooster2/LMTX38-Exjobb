@@ -1,41 +1,45 @@
-#Standard Modules
-from random import random
+from random import sample
 
-#Other Modules
 from cell import Cell
+from cell import Side
 
 
 def create_grid(size_x, size_y):
     grid = []
+    outer_walled = []
     for x in range(size_x):
         grid.append([])
         for y in range(size_y):
-            grid[i].append(Cell(x, y))
-            grid[i][j].print_info()
-    return grid
+            if x > 0:
+                prev_x_cell = grid[x-1][y]
+            if y > 0:
+                prev_y_cell = grid[x][y-1]
+            cell = Cell(x, y, prev_y_cell, None, None, prev_x_cell)
+            try:
+                prev_x_cell.set_neighbour(cell, Side.RIGHT)
+            except:
+                pass
+            try:
+                prev_y_cell.set_neighbour(cell, Side.UP)
+            except:
+                pass
+            if x == 0: 
+                cell.add_outer_wall(Side.LEFT)
+            if x == size_x-1:
+                cell.add_outer_wall(Side.RIGHT)
+            if y == 0:
+                cell.add_outer_wall(Side.UP)
+            if y == size_y:
+                cell.add_outer_wall(Side.DOWN)
+            if cell.has_outer_walls:
+                outer_walled.append(cell)
 
-def create_endpoints(grid, size_x, size_y):
-    outer_cells = []
-    for x in range(size_x):
-        for y in range(size_y):
-            #Check if x,y is on the border of the grid
-            if x in (0, size_x-1) || y in (0, size_y-1):
-                #If it is, save it as a tuple
-                outer_cells.append((x, y))
-    start_point, finish_point = random.sample(outer_cells, 2)
-    
-    
+            grid.append(cell)
+    return [grid, outer_walled]
 
 
 
-if __name__ == "__main__":
-    #size_x = input("X-size: ")
-    #size_y = input("Y-size: ")
-    size_x = 3
-    size_y = 3
-    grid = create_grid(size_x, size_y)
-
-
-
-    
+if __name__ == '__main__':
+    size_x = 5
+    size_y = 5
 

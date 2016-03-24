@@ -3,7 +3,19 @@ Set starting pos
 Set ending pos
 
 Grid of cells
-	cell is class?
-		yes
-	cell holds position and whether it is an endpoint
-	
+
+---
+while there are unvisited cells:
+	random directions
+	while there are directions:
+		take first dir
+		try to make neighbour
+		if success:
+			go there, break
+		else:
+			take next dir
+
+---
+just count visited cells
+
+
