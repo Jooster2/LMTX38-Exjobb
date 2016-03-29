@@ -33,9 +33,9 @@ def create_grid(size_x, size_y):
                 cell.add_outer_wall(Side.RIGHT)
             if y == 0:
                 cell.add_outer_wall(Side.UP)
-            if y == size_y:
+            if y == size_y-1:
                 cell.add_outer_wall(Side.DOWN)
-            if cell.has_outer_walls:
+            if cell.has_outer_walls():
                 outer_walled.append(cell)
 
             grid[x].append(cell)
@@ -57,7 +57,23 @@ if __name__ == '__main__':
     size_y = 5
     grid, outer_walled = create_grid(size_x, size_y)
     s_pt, f_pt = create_endpoints(outer_walled)
-    grid, solution = generate_maze(grid, outer_walled, s_pt, f_pt)
+    grid = generate_maze(grid, outer_walled, s_pt, f_pt)
+    print(s_pt)
+    
+    print("Starting solving algorithm")
+    solution = find_solution(s_pt)
+    if solution:
+        print("Solving algorithm finished successfully")
+        for cell in solution:
+            if cell.is_start:
+                print("{}, is start".format(cell.coords(),))
+            elif cell.is_finish:
+                print("{}, is finish".format(cell.coords(),))
+            else:
+                print(cell.coords())
+    else:
+        print("Failed to solve maze, algorithm has produced impossible maze")
+
     """The following has never produced output (ie, there are no
        unvisited cells).
     for x in grid:

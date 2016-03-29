@@ -66,8 +66,10 @@ class Cell:
         return all(x is True for x in self.walls.values())
 
     def has_outer_walls(self):
-        if len(self.outer_walls) > 0: return True
-        else: return False
+        if len(self.outer_walls) > 0:
+            return True
+        else:
+            return False
 
     def knock_wall(self, side):
         if self.walls[side] and self.neighbours[side] is not None:
@@ -78,11 +80,11 @@ class Cell:
             return False
 
     def get_walls(self, intact=True):
-        walls = []
+        wall_list = []
         for key, value in self.walls.items():
             if intact == value:
-                walls.append(key)
-        return walls
+                wall_list.append(key)
+        return wall_list
 
 
     def coords(self):
