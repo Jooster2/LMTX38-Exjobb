@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import IntEnum
 from random import sample
 
-class Side(Enum):
+class Side(IntEnum):
     UP = 0
     RIGHT = 1
     DOWN = 2
@@ -44,6 +44,20 @@ class Cell:
 
     def set_neighbour(self, neighbour, side):
         self.neighbours[side] = neighbour
+        if neighbour.neighbours[Side.opposite(side)] is None:
+            neighbour.set_neighbour(self, Side.opposite(side))
+
+    def get_neighbour(self, side):
+        if self.neighbours[side] is not None:
+            return self.neighbours[side]
+        else:
+            return self
+    
+    def is_neighbour(self, other):
+        if other in self.neighbours.values():
+            return True
+        else:
+            return False
 
     def add_outer_wall(self, side):
         self.outer_walls.append(side)
@@ -63,6 +77,32 @@ class Cell:
         else:
             return False
 
+    def get_walls(self, intact=True):
+        walls = []
+        for key, value in self.walls.items():
+            if intact == value:
+                walls.append(key)
+        return walls
+
+
+    def coords(self):
+        return "Cell at {}.{}".format(self.pos_x, self.pos_y)
+
     def __str__(self):
-        me = "X.Y: {}.{}".format(self.pos_x, self.pos_y)
+        me = "X.Y: {}.{}\n".format(self.pos_x, self.pos_y)
+        me += "Neighbours:\n"
+        for key, value in sorted(self.neighbours.items()):
+            try:
+                me += "\tOn side {}: {}\n".format(
+                        key.name, value.coords())
+            except:
+                me += "\tOn side {}: None\n".format(key.name,)
+        if len(self.outer_walls) > 0:
+            me += "Outer walls:\n"
+            for wall in self.outer_walls:
+                me += "{}\n".format(wall.name,)
+        if self.is_start:
+            me += "Is start point\n"
+        if self.is_finish:
+            me += "Is finish point\n"
         return me
