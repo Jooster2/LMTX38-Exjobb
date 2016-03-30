@@ -12,19 +12,19 @@ def create_grid(size_x, size_y):
     for x in range(size_x):
         grid.append([])
         for y in range(size_y):
-            prev_x_cell = None
-            prev_y_cell = None
+            prev_x = None
+            prev_y = None
             if x > 0:
-                prev_x_cell = grid[x-1][y]
+                prev_x = grid[x-1][y]
             if y > 0:
-                prev_y_cell = grid[x][y-1]
-            cell = Cell(x, y, prev_y_cell, None, None, prev_x_cell)
+                prev_y = grid[x][y-1]
+            cell = Cell(x, y, np_up=prev_y, nb_left=prev_x)
             try:
-                prev_x_cell.set_neighbour(cell, Side.RIGHT)
+                prev_x.set_neighbour(cell, Side.RIGHT)
             except:
                 pass
             try:
-                prev_y_cell.set_neighbour(cell, Side.DOWN)
+                prev_y.set_neighbour(cell, Side.DOWN)
             except:
                 pass
             if x == 0: 
