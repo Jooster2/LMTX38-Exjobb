@@ -12,7 +12,8 @@ def generate_maze(grid, outer_walled, s_pt, f_pt):
     while cells_remaining(grid):
         print(cells_remaining(grid), end=", ")
         for side in Side.random_all():
-            if current_cell.get_neighbour(side).is_not_visited():
+            if current_cell.get_neighbour(side).is_not_visited() and \
+                    current_cell.is_finish != True:
                 visited_cells.append(current_cell)
                 current_cell.knock_wall(side)
                 current_cell = current_cell.get_neighbour(side)
