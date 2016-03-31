@@ -1,9 +1,11 @@
 from random import sample
+from tkinter import *
+from tkinter import ttk
+from PIL import Image, ImageTk
 
-from cell import Cell
-from cell import Side
-from algorithm import generate_maze
-from algorithm import find_solution
+from cell import Cell, Side
+from algorithm import generate_maze, find_solution
+from graphical import create_cell_images, display
 
 
 def create_grid(size_x, size_y):
@@ -18,7 +20,7 @@ def create_grid(size_x, size_y):
                 prev_x = grid[x-1][y]
             if y > 0:
                 prev_y = grid[x][y-1]
-            cell = Cell(x, y, np_up=prev_y, nb_left=prev_x)
+            cell = Cell(x, y, nb_up=prev_y, nb_left=prev_x)
             try:
                 prev_x.set_neighbour(cell, Side.RIGHT)
             except:
@@ -53,16 +55,19 @@ def create_endpoints(outer_walled):
 
 
 if __name__ == '__main__':
-    size_x = 5
-    size_y = 5
+    size_x = 7
+    size_y = 7
     grid, outer_walled = create_grid(size_x, size_y)
     s_pt, f_pt = create_endpoints(outer_walled)
     grid = generate_maze(grid, outer_walled, s_pt, f_pt)
+
     print(s_pt)
     
     print("Starting solving algorithm")
     solution = find_solution(s_pt)
     if solution:
+        img_grid = create_cell_images(grid, solution)
+        display(img_grid)
         print("Solving algorithm finished successfully")
         for cell in solution:
             if cell.is_start:
