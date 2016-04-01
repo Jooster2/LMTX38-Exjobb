@@ -1,47 +1,14 @@
-from cell import Side
-from cell import Cell
+from cell import Cell, Side
+from path_creators import depth_first
 
-
-
-def generate_maze(grid, outer_walled, s_pt, f_pt):
-    """Start at s_pt, and knock down walls in a depth-first search.
-       Only stop when all cells in the grid have been visited."""
-    visited_cells = []
-    current_cell = s_pt
-    print("Starting algorithm\nNumber of cells remaining: ", end="")
-    while cells_remaining(grid):
-        print(cells_remaining(grid), end=", ")
-        for side in Side.random_all():
-            if current_cell.get_neighbour(side).is_not_visited():
-                visited_cells.append(current_cell)
-                current_cell.knock_wall(side)
-                current_cell = current_cell.get_neighbour(side)
-                break
-            
-        # If there were no unvisited cells on any side
-        else:
-            try:
-                # Backtrack one step, and remove cell from solution
-                current_cell = visited_cells.pop()
-            except IndexError as e:
-                print(e)
+def generate_maze(grid, s_pt, f_pt, algorithm="DFS"):
+    if algorithm == "DFS":
+        depth_first(grid, s_pt)
+    elif algorithm == "PFF":
+        res = path_finish_first(grid, s_pt, f_pt)
+        depth_first(grid, s_pt, res)
 
     print("\nAlgorithm finished correctly")
-    
-    return grid
-
-
-
-
-def cells_remaining(grid):
-    """Return the number of cells in the grid that have all
-       four walls intact."""
-    number = 0
-    for vertical in grid:
-        for cell in vertical:
-            if cell.is_not_visited():
-                number += 1
-    return number
 
 
 def find_solution(current_cell, previous_cell=None):

@@ -17,9 +17,45 @@ class Side(IntEnum):
         elif side is Side.LEFT:
             return Side.RIGHT
 
+    def convert(number):
+        if type(number) is Side:
+            return {Side.UP: 0,
+                    Side.RIGHT: 1,
+                    Side.DOWN: 2,
+                    Side.LEFT: 3}[number]
+        elif type(number) is int:
+            return {0: Side.UP,
+                    1: Side.RIGHT,
+                    2: Side.DOWN,
+                    3: Side.LEFT}[number]
+        else:
+            return None
 
+    def biased_random(side1, side2, level=3):
+        rand_list = []
+        side1 = convert(side1)
+        side2 = convert(side2)
+        for x in range(level):
+            rand_list.append(side1)
+        rand_list.append(side2)
+
+        
+        
     def random_all():
         return sample(list(Side), 4)
+
+    def convert_sides(x, y):
+        res = []
+        if x < 0:
+            res.append(Side.LEFT)
+        else:
+            res.append(Side.RIGHT)
+        if y < 0:
+            res.append(Side.UP)
+        else:
+            res.append(Side.DOWN)
+        return res
+
 
 
 class Cell:
@@ -85,6 +121,10 @@ class Cell:
             if intact == value:
                 wall_list.append(key)
         return wall_list
+
+    def calc_steps(other):
+        return (self.pos_x - other.pos_x, \
+                self.pos_y - other.pos_y)
 
 
     def coords(self):

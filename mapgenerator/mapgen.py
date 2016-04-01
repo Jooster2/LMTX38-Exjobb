@@ -55,11 +55,11 @@ def create_endpoints(outer_walled):
 
 
 if __name__ == '__main__':
-    size_x = 7
-    size_y = 7
+    size_x = 15
+    size_y = 15
     grid, outer_walled = create_grid(size_x, size_y)
     s_pt, f_pt = create_endpoints(outer_walled)
-    grid = generate_maze(grid, outer_walled, s_pt, f_pt)
+    generate_maze(grid, s_pt, f_pt, "DFS")
 
     print(s_pt)
     
