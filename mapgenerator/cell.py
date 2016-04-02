@@ -1,5 +1,5 @@
 from enum import IntEnum
-from random import sample
+from random import sample, randrange
 
 class Side(IntEnum):
     UP = 0
@@ -17,9 +17,67 @@ class Side(IntEnum):
         elif side is Side.LEFT:
             return Side.RIGHT
 
+    def convert(number):
+        if type(number) is Side:
+            return {Side.UP: 0,
+                    Side.RIGHT: 1,
+                    Side.DOWN: 2,
+                    Side.LEFT: 3}[number]
+        elif type(number) is int:
+            return {0: Side.UP,
+                    1: Side.RIGHT,
+                    2: Side.DOWN,
+                    3: Side.LEFT}[number]
+        else:
+            return None
 
+    def biased_random(side_1, side_2, side_3=None, side_4=None,
+            p_1=1, p_2=1, p_3=0, p_4=0):
+        interval_1 = range(p_1)
+        pool = p_1
+        interval_2 = range(pool, pool+p_2)
+        pool += p_2
+        interval_3 = range(pool, pool+p_3)
+        pool += p_3
+        interval_4 = range(pool, pool+p_4)
+        pool += p_4
+        choice = randrange(pool)
+        if choice in interval_1:
+            return side_1
+        elif choice in interval_2:
+            return side_2
+        elif choice in interval_3:
+            return side_3
+        elif choice in interval_4:
+            return side_4
+
+
+
+        """rand_list = []
+        side1 = Side.convert(side1)
+        side2 = Side.convert(side2)
+        for x in range(level):
+            rand_list.append(side1)
+        rand_list.append(side2)
+        return sample..."""
+
+        
+        
     def random_all():
         return sample(list(Side), 4)
+
+    def convert_sides(x, y):
+        res = []
+        if x < 0:
+            res.append(Side.LEFT)
+        else:
+            res.append(Side.RIGHT)
+        if y < 0:
+            res.append(Side.UP)
+        else:
+            res.append(Side.DOWN)
+        return res
+
 
 
 class Cell:
@@ -86,9 +144,22 @@ class Cell:
                 wall_list.append(key)
         return wall_list
 
+    def calc_steps(self, other):
+        return (other.pos_x - self.pos_x, \
+                other.pos_y - self.pos_y)
+
+    def distance_to(self, other):
+        return (abs(other.pos_x - self.pos_x) + \
+                abs(other.pos_y - self.pos_y))
+
 
     def coords(self):
-        return "Cell at {}.{}".format(self.pos_x, self.pos_y)
+        me = "Cell at {}.{}".format(self.pos_x, self.pos_y)
+        if self.is_start:
+            me += " Is Start"
+        elif self.is_finish:
+            me += " Is Finish"
+        return me
 
     def __str__(self):
         me = "X.Y: {}.{}\n".format(self.pos_x, self.pos_y)
