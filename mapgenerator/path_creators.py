@@ -1,5 +1,6 @@
 from random import sample, choice
-from cell import Cell, Side
+from cell import Cell
+from directions import Side
 
 def cells_remaining(grid):
     """
@@ -19,11 +20,12 @@ def depth_first(grid, s_pt, visited_cells):
     """
     Start at s_pt, and knock down walls in a depth-first search.
     Only stop when all cells in the grid have been visited.
+    Third argument, visited_cells, is optional, but can be used
+    to inform DFS on the previously visited cells.
     """
     if len(visited_cells) > 0:
-        print("Found visited cells in list, starting from one of them")
-        print(visited_cells)
-        return
+        print("Given a list of cells as argument,", \
+                "starting from one of them")
         current_cell = choice(visited_cells)
     else:
         current_cell = s_pt

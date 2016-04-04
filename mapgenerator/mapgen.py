@@ -4,7 +4,8 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from cmath import sqrt
 
-from cell import Cell, Side
+from cell import Cell
+from directions import Side
 from algorithm import generate_maze, find_solution
 from graphical import create_cell_images, display
 
@@ -68,8 +69,8 @@ def create_endpoints(outer_walled):
 
 
 if __name__ == '__main__':
-    size_x = 5
-    size_y = 5
+    size_x = 8
+    size_y = 8
     grid, outer_walled = create_grid(size_x, size_y)
     s_pt, f_pt = create_endpoints(outer_walled)
     generate_maze(grid, s_pt, f_pt, "PTF")

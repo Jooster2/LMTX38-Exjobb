@@ -1,4 +1,5 @@
-from cell import Cell, Side
+from cell import Cell
+from directions import Side
 from path_creators import depth_first, path_to_finish
 
 def generate_maze(grid, s_pt, f_pt, algorithm="DFS"):

@@ -8,7 +8,8 @@ from contextlib import contextmanager
 import os, sys
 
 from mapgen import create_grid, create_endpoints
-from cell import Cell, Side
+from cell import Cell
+from driections import Side
 from algorithm import generate_maze, find_solution
 
 

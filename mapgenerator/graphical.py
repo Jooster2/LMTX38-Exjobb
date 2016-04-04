@@ -2,7 +2,8 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 
-from cell import Cell, Side
+from cell import Cell
+from directions import Side
 
 root = Tk()
 root.attributes("-fullscreen", True)
