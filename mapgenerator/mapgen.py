@@ -55,12 +55,10 @@ def create_endpoints(outer_walled):
     Mark two Cells as start point and finish point respectively, randomly chosen out of
     the list supplied as parameter.
     """
-    #is_neighbour = True
     distance = 0
     min_distance_allowed = int(abs(sqrt(len(outer_walled))))
     while distance < min_distance_allowed:
         s_pt, f_pt = sample(outer_walled, 2)
-        #is_neighbour = s_pt.is_neighbour(f_pt)
         distance = s_pt.distance_to(f_pt)
     s_pt.is_start = True
     f_pt.is_finish = True
