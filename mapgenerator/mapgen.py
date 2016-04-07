@@ -8,6 +8,9 @@ from cell import Cell
 from directions import Side
 from algorithm import generate_maze, find_solution
 from graphical import create_cell_images, display
+from car import Car
+from door_module import DoorModule
+from button_act import ButtonActivator
 
 
 def create_grid(size_x, size_y):
@@ -92,22 +95,4 @@ if __name__ == '__main__':
                 print(cell.coords())
     else:
         print("Failed to solve maze, algorithm has produced impossible maze")
-
-    """The following has never produced output (ie, there are no
-       unvisited cells).
-    for x in grid:
-        for y in x:
-            if y.is_not_visited():
-                print("I have not been visited", y)
-                """
-
-    """print("Solution is as follows:")
-    for cell in solution:
-        if cell.is_start:
-            print(cell.coords(), "Is start")
-        elif cell.is_finish:
-            print(cell.coords(), "Is finish")
-        else:
-            print(cell.coords())
-   """ 
 

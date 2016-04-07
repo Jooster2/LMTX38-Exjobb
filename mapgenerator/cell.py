@@ -4,6 +4,7 @@ from directions import Side
 
 
 class Cell:
+    """Cell is a square that represents a section of the map."""
 
     def __init__(self, pos_x, pos_y,
             nb_up=None, nb_right=None, nb_down=None, nb_left=None):
@@ -24,29 +25,41 @@ class Cell:
         self.is_finish = False
 
     def set_neighbour(self, neighbour, side):
+        """
+        Pair this cell with another, declaring them neighbours.
+        neighbour -- another cell to pair this one with
+        side -- the side on which the other cell is located
+        """
+
         self.neighbours[side] = neighbour
         if neighbour.neighbours[Side.opposite(side)] is None:
             neighbour.set_neighbour(self, Side.opposite(side))
 
     def get_neighbour(self, side):
+        """Return the neighbour located on specified side."""
+
         if self.neighbours[side] is not None:
             return self.neighbours[side]
         else:
             return self
     
     def is_neighbour(self, other):
+        """Check whether this cell and the other are neighbours."""
         if other in self.neighbours.values():
             return True
         else:
             return False
 
     def add_outer_wall(self, side):
+        """Add an outer wall to this cell on specified side."""
         self.outer_walls.append(side)
 
     def is_not_visited(self):
+        """Return whether this cell has all walls intact."""
         return all(x is True for x in self.walls.values())
 
     def has_outer_walls(self):
+        """Return whether this cell has any outer walls."""
         if len(self.outer_walls) > 0:
             return True
         else:
@@ -61,6 +74,11 @@ class Cell:
             return False
 
     def get_walls(self, intact=True):
+        """
+        Return a list of all walls (not outer) this cell has.
+        intact -- whether to return a list of intact walls
+        """
+
         wall_list = []
         for key, value in self.walls.items():
             if intact == value:
@@ -68,15 +86,27 @@ class Cell:
         return wall_list
 
     def calc_steps(self, other):
+        """
+        Return a tuple, containing the x and y distances to
+        the other cell.
+        """
         return (other.pos_x - self.pos_x, \
                 other.pos_y - self.pos_y)
 
     def distance_to(self, other):
+        """
+        Return the amount of cells between this cell and the other,
+        in absolute terms.
+        """
         return (abs(other.pos_x - self.pos_x) + \
                 abs(other.pos_y - self.pos_y))
 
 
     def coords(self):
+        """
+        Return a formatted string with some info about this cells
+        position.
+        """
         me = "Cell at {}.{}".format(self.pos_x, self.pos_y)
         if self.is_start:
             me += " Is Start"
@@ -85,6 +115,10 @@ class Cell:
         return me
 
     def __str__(self):
+        """
+        Return a formatted string with all relevant info about this
+        cell.
+        """
         me = "X.Y: {}.{}\n".format(self.pos_x, self.pos_y)
         me += "Neighbours:\n"
         for key, value in sorted(self.neighbours.items()):
