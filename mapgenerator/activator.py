@@ -1,7 +1,6 @@
-from cell import Cell
 from car import Car
 
-class Activator(Cell):
+class Activator():
     """
     An Activator is any item that the cars can interface with to
     activate a Module. This is a base class for all activators.
@@ -11,9 +10,7 @@ class Activator(Cell):
     """
     all_cars = [Car.BIG, Car.CAM, Car.GRAB]
     
-    def __init__(self, pos_x, pos_y,
-            nb_up=None, nb_right=None, nb_down=None, nb_left=None,
-            continuous_needed=False, *a_req):
+    def __init__(self, continuous_needed=False, *a_req):
         """
         continuous_needed -- whether the activator resets on release
         *a_req -- a list of cars that can use the activator
