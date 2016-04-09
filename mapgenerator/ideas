@@ -18,4 +18,18 @@ while there are unvisited cells:
 ---
 just count visited cells
 
+---
 
+Grid-creator makes a simple grid
+Place start and finish
+Find path between start and finish
+
+Move from finish to start and place modules
+For each module, create branches, 1-3, where each branch is for a spec car
+On the branch, if for small car, randomly place partedcells with elevation
+On the branch, randomly place modules (rarely)
+Branch for that module
+---
+Placing partedcells:
+Create partedcell. All small cells know their small neighbours.
+Update large neighbours

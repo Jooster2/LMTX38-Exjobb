@@ -8,6 +8,7 @@ class Cell:
 
     def __init__(self, pos_x, pos_y,
             nb_up=None, nb_right=None, nb_down=None, nb_left=None):
+
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.neighbours = {Side.UP: nb_up,
