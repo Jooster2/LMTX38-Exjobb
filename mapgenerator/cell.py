@@ -51,6 +51,10 @@ class Cell:
         else:
             return False
 
+    def remove_as_neighbour(self):
+        for side, cell in self.neighbours.items():
+            cell.neighbours[Side.opposite(side)] = None
+
     def add_outer_wall(self, side):
         """Add an outer wall to this cell on specified side."""
         self.outer_walls.append(side)
@@ -101,6 +105,24 @@ class Cell:
         """
         return (abs(other.pos_x - self.pos_x) + \
                 abs(other.pos_y - self.pos_y))
+
+
+    def transmute(self, other):
+        """Transmute this cell into another."""
+        self.pos_x = other.pos_x
+        self.pos_y = other.pos_y
+        self.is_start = other.is_start
+        self.is_finish = other.is_finish
+        self.outer_walls = other.outer_walls
+
+        other.remove_as_neighbour()
+        for side, cell in other.neighbours.items():
+            self.set_neighbour(cell, side)
+        for side, value in other.walls.items():
+            self.walls[side] = value
+
+
+
 
 
     def coords(self):

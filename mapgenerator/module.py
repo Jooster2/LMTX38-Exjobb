@@ -8,26 +8,6 @@ class Module(Cell):
         It is not abstract (because abstract classes and methods 
         are strange in python), but it should never be instantiated.
     """
-    
-    def __init__(self, pos_x, pos_y,
-            nb_up=None, nb_right=None, nb_down=None, nb_left=None,
-            facing, *activators):
-        """
-        facing -- a side that should be the modules front
-        *activators -- a list of relevant activators
-        """
-
-        super().__init__(pos_x,pos_y,
-            np_up,nb_right,nb_down,nb_left)
-
-        if self.walls[facing] == True:
-            raise ValueError("Wall in the way of module facing")
-        else:
-            self.facing = facing
-            self.activators = []
-            self.activators.extend(activators)
-
-            
 
     def is_crossable(self):
         """Return whether the module can be driven over or not."""

@@ -44,4 +44,3 @@ def find_solution(current_cell, previous_cell=None):
             return False
 
 
-
