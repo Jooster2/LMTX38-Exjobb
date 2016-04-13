@@ -8,6 +8,10 @@ class Module(Cell):
         It is not abstract (because abstract classes and methods 
         are strange in python), but it should never be instantiated.
     """
+    def __init__(self, pos_x, pos_y,
+            nb_up=None, nb_right=None, nb_down=None, nb_left=None):
+        self.activators = []
+        self.branch = None
 
     def is_crossable(self):
         """Return whether the module can be driven over or not."""
@@ -26,7 +30,6 @@ class Module(Cell):
 
     def add_activators(self, *activators):
         """Add any number of activators for this module."""
-        self.activators = []
         self.activators.extend(activators)
 
     def check_activators(self):
@@ -35,3 +38,4 @@ class Module(Cell):
         this to check if the module should activate.
         """
         return all(x is True for x in self.activators.is_active())
+

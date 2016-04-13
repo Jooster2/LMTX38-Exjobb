@@ -1,6 +1,8 @@
 from cell import Cell
 from directions import Side
 from path_creators import depth_first, path_to_finish
+from dfs_alt import permeate_grid
+from branch import Branch
 
 def generate_maze(grid, s_pt, f_pt, algorithm="DFS"):
     """
@@ -8,11 +10,18 @@ def generate_maze(grid, s_pt, f_pt, algorithm="DFS"):
     """
     if algorithm == "DFS":
         depth_first(grid, s_pt, [])
+        print("\nAlgorithm finished correctly")
     elif algorithm == "PTF":
         res = path_to_finish(grid, s_pt, f_pt)
-        depth_first(grid, s_pt, res)
+        branches = depth_first(grid, s_pt, res)
+        print("\nAlgorithm finished correctly")
+        return branches
+    elif algorithm == "PG":
+        res = path_to_finish(grid, s_pt, f_pt)
+        branch = permeate_grid(grid, res)
+        print("\nAlgorithm finished correctly")
+        return branch
 
-    print("\nAlgorithm finished correctly")
 
 
 def find_solution(current_cell, previous_cell=None):

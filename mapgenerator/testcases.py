@@ -23,7 +23,7 @@ def grid_complete_test(iterations=500, algo="PTF"):
     """
     try:
         iterations = int(iterations)
-        algo = str(algo)
+        algo = str(algo).upper()
     except:
         print("Error, grid complete test, wrong argument type")
         return
@@ -31,13 +31,19 @@ def grid_complete_test(iterations=500, algo="PTF"):
     start_time = time()
     x = 8
     y = 8
-    i = 0
+    i = 1
     while i <= iterations:
         print("Iteration:", i)
+        """
         with suppress_stdout():
             grid, outer_walled = create_grid(x,y)
             s_pt, f_pt = create_endpoints(outer_walled)
             generate_maze(grid, s_pt, f_pt, algo)
+        """
+        grid, outer_walled = create_grid(x,y)
+        s_pt, f_pt = create_endpoints(outer_walled)
+        generate_maze(grid, s_pt, f_pt, algo)
+        print(cells_remaining(grid))
         assert cells_remaining(grid) == 0
         i += 1
     print("Grid complete test finished {} iterations successfully in {} seconds".format(iterations, time() - start_time))
@@ -59,7 +65,7 @@ def outer_walls_test(iterations=50000):
     start_time = time()
     x = 5
     y = 5
-    i = 0
+    i = 1
     while i <= iterations:
         if i % 10000 == 0:
             print("Iteration: {}".format(i,)) 
@@ -91,7 +97,7 @@ def solver_test(iterations=300, algo="DFS", expand="False"):
     start_time = time()
     x = 8
     y = 8
-    i = 0
+    i = 1
     size_change = True
     while i <= iterations:
         if size_change:
@@ -101,9 +107,12 @@ def solver_test(iterations=300, algo="DFS", expand="False"):
         with suppress_stdout():
             grid, outer_walled = create_grid(x,y)
             s_pt, f_pt = create_endpoints(outer_walled)
-            generate_maze(grid, s_pt, f_pt, algo)
+            branches = generate_maze(grid, s_pt, f_pt, algo)
             solution = find_solution(s_pt)
             min_path = min(min_path, len(solution))
+
+        for branch in branches:
+            print(branch)
         assert solution != False, "Solution was False"
         assert solution[0] is s_pt, "Solution has faulty starting position"
         assert solution[-1] is f_pt, "Solution has faulty finish position"

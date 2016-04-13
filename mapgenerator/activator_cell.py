@@ -17,6 +17,13 @@ class ActivatorCell(Cell):
         """Place an Activator in a Corner."""
         self.activators[corner] = activator
 
+    def get_activators(self):
+        """Return all activators (no None)."""
+        return [x for x in self.activators.values() \
+                if x is not None] 
+
+
+
     
 
 

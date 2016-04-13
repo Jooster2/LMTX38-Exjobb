@@ -8,6 +8,26 @@ from leveled_cell import LeveledCell
 from activator_cell import ActivatorCell
 from complex_cell import ComplexCell
 from directions import Side, Corner
+from algorithms import Branch
+
+
+def puzzle_maker(grid, branches, modules, activators):
+    """
+    Place modules and activators in the grid, in such a way
+    that they don't block each other. The rules of placement are as
+    follows:
+        1. an activator must not be placed behind the module it's 
+           connected to.
+        2. an activator must not be placed in any of the branches
+           that are located behind the module it's connected to.
+        3. for every branch found when checking 2, if there are
+           other activators in there, rule 2 must be run on the
+           modules these other activators are connected to, and the
+           new module may not be placed in any of those branches 
+           either.
+    Rule 1 is a subset of rule 2 is a subset of rule 3.
+    """
+    
 
 
 

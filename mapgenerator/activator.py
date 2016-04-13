@@ -1,6 +1,6 @@
 from car import Car
 
-class Activator():
+class Activator:
     """
     An Activator is any item that the cars can interface with to
     activate a Module. This is a base class for all activators.
@@ -10,17 +10,19 @@ class Activator():
     """
     all_cars = [Car.BIG, Car.CAM, Car.GRAB]
     
-    def __init__(self, continuous_needed=False, *a_req):
+    def __init__(self, module, *a_req, continuous_needed=False):
         """
         continuous_needed -- whether the activator resets on release
+        module -- the module that this activator binds to
         *a_req -- a list of cars that can use the activator
         """
 
-        super().__init__(pos_x,pos_y,np_up,nb_right,nb_down,nb_left)
         self.continuous_needed = continuous_needed
+        self.module = module
         self.possible_cars = []
         self.possible_cars.extend(a_req)
         self.active = False
+        module.add_activators(self)
 
 
     def activate(self, unit):
