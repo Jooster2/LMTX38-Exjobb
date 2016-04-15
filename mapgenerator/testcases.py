@@ -1,11 +1,11 @@
 """
-Testing functions for the Map Generator are here. They are run according to command line 
-arguments. All tests run for a specified number of iterations, but also have a fairly sane
-standard argument.
+Testing functions for the Map Generator are here. They are run
+according to command line arguments. All tests run for a specified 
+number of iterations, but also have fairly sane standard arguments.
 """
 
 from contextlib import contextmanager
-import os, sys, pydoc
+import os, sys, pydoc, gc
 from time import time
 
 from mapgen import create_grid, create_endpoints
@@ -15,7 +15,7 @@ from algorithm import generate_maze, find_solution
 from path_creators import cells_remaining
 
 
-def grid_complete_test(iterations=500, algo="PTF"):
+def grid_complete_test(iterations=50, algo="PTF"):
     """
     ARGS: iterations(=500), algo(="PTF")
     Test that the algorithm specified has created a maze in which
@@ -27,26 +27,23 @@ def grid_complete_test(iterations=500, algo="PTF"):
     except:
         print("Error, grid complete test, wrong argument type")
         return
-    print("Starting grid complete test, running {} iterations, {} algorithm".format(iterations, algo))
+    print("Starting grid complete test, running {} iterations, \
+            {} algorithm".format(iterations, algo))
     start_time = time()
     x = 8
     y = 8
     i = 1
     while i <= iterations:
         print("Iteration:", i)
-        """
         with suppress_stdout():
             grid, outer_walled = create_grid(x,y)
             s_pt, f_pt = create_endpoints(outer_walled)
             generate_maze(grid, s_pt, f_pt, algo)
-        """
-        grid, outer_walled = create_grid(x,y)
-        s_pt, f_pt = create_endpoints(outer_walled)
-        generate_maze(grid, s_pt, f_pt, algo)
-        print(cells_remaining(grid))
         assert cells_remaining(grid) == 0
         i += 1
-    print("Grid complete test finished {} iterations successfully in {} seconds".format(iterations, time() - start_time))
+        gc.collect()
+    print("Grid complete test finished {} iterations successfully \
+            in {} seconds".format(iterations, time() - start_time))
 
 
 
@@ -61,7 +58,8 @@ def outer_walls_test(iterations=50000):
     except:
         print("Error, outer walls test, wrong argument type")
         return
-    print("Starting outer walls test, running {} iterations".format(iterations,))
+    print("Starting outer walls test, running {} iterations"\
+            .format(iterations,))
     start_time = time()
     x = 5
     y = 5
@@ -71,10 +69,13 @@ def outer_walls_test(iterations=50000):
             print("Iteration: {}".format(i,)) 
         grid, outer_walled = create_grid(x,y)
         s_pt, f_pt = create_endpoints(outer_walled)
-        assert s_pt.has_outer_walls() == True, "Start has no outer walls"
-        assert f_pt.has_outer_walls() == True, "Finish has no outer walls"
+        assert s_pt.has_outer_walls() == True, \
+                "Start has no outer walls"
+        assert f_pt.has_outer_walls() == True, \
+                "Finish has no outer walls"
         i += 1
-    print("Outer walls test finished {} iterations successfully in {} seconds".format(iterations, time() - start_time))
+    print("Outer walls test finished {} iterations successfully \
+            in {} seconds".format(iterations, time() - start_time))
 
 def solver_test(iterations=300, algo="DFS", expand="False"):
     """
@@ -93,7 +94,8 @@ def solver_test(iterations=300, algo="DFS", expand="False"):
     except:
         print("Error, solver test, wrong argument type")
         return
-    print("Starting solver test, running {} iterations, {} algorithm".format(iterations, algo))
+    print("Starting solver test, running {} iterations, {} \
+            algorithm".format(iterations, algo))
     start_time = time()
     x = 8
     y = 8
@@ -111,11 +113,12 @@ def solver_test(iterations=300, algo="DFS", expand="False"):
             solution = find_solution(s_pt)
             min_path = min(min_path, len(solution))
 
-        for branch in branches:
-            print(branch)
-        assert solution != False, "Solution was False"
-        assert solution[0] is s_pt, "Solution has faulty starting position"
-        assert solution[-1] is f_pt, "Solution has faulty finish position"
+        assert solution != False, \
+                "Solution was False"
+        assert solution[0] is s_pt, \
+                "Solution has faulty starting position"
+        assert solution[-1] is f_pt, \
+                "Solution has faulty finish position"
         i += 1
         if i % 10 == 0 and expand == "true":
             x += 1
@@ -123,15 +126,16 @@ def solver_test(iterations=300, algo="DFS", expand="False"):
         if i % 15 == 0 and expand == "true":
             y += 1
             size_change = True
-    print("Find solution test finished {} iterations successfully in {} seconds".format(iterations, time() - start_time))
+    print("Find solution test finished {} iterations successfully \
+            in {} seconds".format(iterations, time() - start_time))
     print("Shortest solution created in all iterations:", min_path)
 
 @contextmanager
 def suppress_stdout():
     """
-    Used to suppress any unwanted output to console. This is used by the tests to stop any
-    called method from cluttering the console, thus ensuring only test-relevant data is
-    outputted.
+    Used to suppress any unwanted output to console. This is used
+    by the tests to stop any called method from cluttering the 
+    console, thus ensuring only test-relevant data is outputted.
     """
     with open(os.devnull, 'w') as devnull:
         old_stdout = sys.stdout
@@ -143,11 +147,12 @@ def suppress_stdout():
 
 if __name__ == '__main__':
     """
-    Add tests to available_tests as they are constructed. This allows calling from the
-    command line. Example:
+    Add tests to available_tests as they are constructed. 
+    This allows calling from the command line. 
+    Example:
         $ python testcases.py sot 5500 PTF False
-        will call solver test for 5500 iterations, with path to finish algorithm, 
-        and no enlargening maze
+        will call solver test for 5500 iterations, with path to 
+        finish algorithm, and no enlargening maze
 
     """
 
@@ -166,18 +171,24 @@ if __name__ == '__main__':
         sys.exit()
 
     for idx,x in enumerate(sys.argv):
-        # First element in sys.argv is always the name of the file, skip it
+        # First argument is always programs name, skip it. 
         if x == "testcases.py":
             continue
         if x in available_tests.keys():
             args = []
-            # Any data found between function name x and the next are used as arguments
+            """
+            Any data found between function name x and the next
+            are used as arguments.
+            """
             for i in range(idx+1, len(sys.argv)):
                 if sys.argv[i] not in available_tests.keys():
                     args.append(sys.argv[i])
                 else:
                     break
-            # Call function with name x, and pass the arguments in args
+            """
+            Call function with name x, and pass the arguments 
+            in args.
+            """
             available_tests[x](*args)
             break
 

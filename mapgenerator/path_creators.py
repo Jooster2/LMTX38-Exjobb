@@ -5,7 +5,6 @@ from math import ceil
 
 from cell import Cell
 from directions import Side
-from branch import Branch
 
 def cells_remaining(grid):
     """
@@ -57,13 +56,11 @@ def depth_first(grid, s_pt, visited_cells):
     running_dead_ends = False
     path_length = 0
     path_length_max = path_length_maximum(grid)
-    branches = []
 
     if len(visited_cells) > 0:
         print("Given a list of cells as argument,", \
                 "starting from one of them")
         current_cell = choice(visited_cells)
-        branches.append(Branch(visited_cells, None))
     else:
         current_cell = s_pt
     parent = current_cell
@@ -74,8 +71,6 @@ def depth_first(grid, s_pt, visited_cells):
 
         if path_length >= path_length_max:
             dead_ends.append(current_cell)
-            new_branch.append(current_cell) 
-            branches.append(Branch(new_branch, parent))
             if path_to_finish:
                 # If there are still cells in the solution we 
                 # haven't visited.
@@ -87,14 +82,12 @@ def depth_first(grid, s_pt, visited_cells):
                 current_cell = dead_ends.pop(0)
             path_length = 0
             parent = current_cell
-            new_branch = []
 
         for side in Side.random_all():
             if current_cell.get_neighbour(side).is_not_visited():
                 visited_cells.append(current_cell)
                 current_cell.knock_wall(side)
                 current_cell = current_cell.get_neighbour(side)
-                new_branch.append(current_cell)
                 path_length += 1
                 break
             
@@ -107,7 +100,6 @@ def depth_first(grid, s_pt, visited_cells):
                 print(e)
                 path_length = path_length_max
 
-    return branches
 
 def path_to_finish(grid, s_pt, f_pt, visited_cells=[]):
     """

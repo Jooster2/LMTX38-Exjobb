@@ -1,10 +1,10 @@
 from cell import Cell
 from directions import Side
 from path_creators import depth_first, path_to_finish
-from dfs_alt import permeate_grid
+from visit_complete import visit_complete
 from branch import Branch
 
-def generate_maze(grid, s_pt, f_pt, algorithm="DFS"):
+def generate_maze(grid, s_pt, f_pt, algorithm="PTF"):
     """
     Generate a maze according the the specified algorithm. 
     """
@@ -13,15 +13,9 @@ def generate_maze(grid, s_pt, f_pt, algorithm="DFS"):
         print("\nAlgorithm finished correctly")
     elif algorithm == "PTF":
         res = path_to_finish(grid, s_pt, f_pt)
-        branches = depth_first(grid, s_pt, res)
-        print("\nAlgorithm finished correctly")
-        return branches
-    elif algorithm == "PG":
-        res = path_to_finish(grid, s_pt, f_pt)
-        branch = permeate_grid(grid, res)
+        branch = visit_complete(grid, res)
         print("\nAlgorithm finished correctly")
         return branch
-
 
 
 def find_solution(current_cell, previous_cell=None):
@@ -41,10 +35,11 @@ def find_solution(current_cell, previous_cell=None):
     else:
         solution = [current_cell]
         for side in current_cell.get_walls(False):
-            if previous_cell is not current_cell.get_neighbour(side):
+            if previous_cell is not \
+                    current_cell.get_neighbour(side):
                 print("Branching to {}".format(side.name,))
-                branch = find_solution(current_cell.get_neighbour(side), \
-                        current_cell)
+                branch = find_solution(current_cell. \
+                        get_neighbour(side), current_cell)
                 if branch:
                     #print("Branch is true, extending solution")
                     solution.extend(branch)

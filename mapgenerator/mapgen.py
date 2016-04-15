@@ -15,9 +15,10 @@ from button_act import ButtonActivator
 
 def create_grid(size_x, size_y):
     """
-    Create a grid of size_x * size_y, and fill it with Cells. All Cells added to the grid
-    knows about their respective neighbours. Returns both the grid, and a list of all Cells
-    that have outer walls (i.e. those who do not have neighbours on all sides).
+    Create a grid of size_x * size_y, and fill it with Cells. All 
+    Cells added to the grid knows about their respective neighbours.
+    Returns both the grid, and a list of all Cells that have outer 
+    walls (i.e. those who do not have neighbours on all sides).
     """
     grid = []
     outer_walled = []
@@ -55,8 +56,8 @@ def create_grid(size_x, size_y):
 
 def create_endpoints(outer_walled):
     """
-    Mark two Cells as start point and finish point respectively, randomly chosen out of
-    the list supplied as parameter.
+    Mark two Cells as start point and finish point respectively, 
+    randomly chosen out of the list supplied as parameter.
     """
     distance = 0
     min_distance_allowed = int(abs(sqrt(len(outer_walled))))
@@ -74,12 +75,8 @@ if __name__ == '__main__':
     size_y = 8
     grid, outer_walled = create_grid(size_x, size_y)
     s_pt, f_pt = create_endpoints(outer_walled)
-    generate_maze(grid, s_pt, f_pt, "PTF")
+    generate_maze(grid, s_pt, f_pt)
 
-    #print(s_pt)
-    #print(f_pt)
-    #print(s_pt.calc_steps(f_pt))
-    
     print("Starting solving algorithm")
     solution = find_solution(s_pt)
     if solution:
@@ -94,5 +91,6 @@ if __name__ == '__main__':
             else:
                 print(cell.coords())
     else:
-        print("Failed to solve maze, algorithm has produced impossible maze")
+        print("Failed to solve maze, algorithm has produced \
+                impossible maze")
 

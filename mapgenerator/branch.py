@@ -1,3 +1,6 @@
+from random import choice
+from copy import copy
+
 from cell import Cell
 from activator import Activator
 from activator_cell import ActivatorCell
@@ -10,8 +13,9 @@ class Branch:
     which cell (in another branch) they are connected to.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent, name):
         self.parent = parent
+        self.name = name
         self.cells = []
         self.children = []
         self.activators = []
@@ -30,13 +34,27 @@ class Branch:
         Add a branch to this branch's children, and make sure
         they are in order.
         """
-        i = self.cells.index(other.parent)
-        for idx,branch in enumerate(self.children):
-            if i < self.cells.index(branch.parent):
-                self.children.insert(idx, other)
-                break
-        else:
-            self.children.append(other)
+        try:
+            i = self.cells.index(other.parent)
+            for idx,branch in enumerate(self.children):
+                if i < self.cells.index(branch.parent):
+                    self.children.insert(idx, other)
+                    break
+            else:
+                self.children.append(other)
+        except ValueError as e:
+            print(e)
+            print(other.parent)
+
+    def childless_cells(self):
+        temp = list(self.cells)
+        for branch in self.children:
+            try:
+                temp.remove(branch.parent)
+            except ValueError:
+                # There can be two branches with the same parent
+                continue
+        return temp
 
     def find(self, cell):
         """Return the branch that contains cell."""
@@ -49,7 +67,6 @@ class Branch:
                 result = branch.find(cell)
                 if result is not None:
                     return result
-
 
     def sub_branch(self, module):
         """
@@ -90,21 +107,89 @@ class Branch:
                 branches.extend(cell.module.branch.get_basic_tree())
         return branches
 
+    def get_parent(self):
+        """
+        Return the parent of this branch. If there is no parent 
+        (i.e. this is top branch), return random cell in this
+        branch, that has at least one unvisited neighbour.
+        """
+        if self.parent is None:
+            temp = [cell for cell in self.cells \
+                    if cell.has_unvisited_neighbours()]
+            if temp:
+                return choice(temp)
+            else:
+                return False
+        else:
+            return self.parent
+
+    def get_by_name(self, name):
+        """Recursively find and return the branch with spec name."""
+        name = int(name)
+        print("NS, entering",self.name)
+        if self.name == name:
+            print("NS, returning self")
+            return self
+        elif not self.children:
+            return None
+        else:
+            for branch in self.children:
+                chosen = branch.get_by_name(name)
+                if chosen:
+                    print("NS, got",chosen.name)
+                if chosen is not None:
+                    print("Name-searching, returning",chosen.name)
+                    return chosen
+            print("Name-searching, returning None (bad child)")
+            return None
+
+    def shortest(self, length=100):
+        """
+        Recursively find and return the branch with the fewest
+        amount of cells.
+        """
+        length = int(length)
+        if not self.children: 
+            if len(self.cells) >= length:
+                return None
+            else:
+                return self
+        else:
+            chosen = self
+            length = len(self.cells)
+            for branch in self.children:
+                other = branch.shortest(length)
+                if other:
+                    if len(other.cells) < len(chosen.cells):
+                        chosen = other
+            return chosen
+                
+                
+                
+
+
+    
     def prev(self, cell):
         """Return the cell that is before specified cell."""
-        idx = self.cells.index(cell)
-        if idx <= 0:
-            raise IndexError("No cell before this")
+        if cell in self.cells:
+            idx = self.cells.index(cell)
+            if idx >= 1:
+                return self.cells[idx-1]
+            else:
+                return False
         else:
-            return self.cells[idx-1]
+            return False
 
     def next(self, cell):
         """Return the cell that is after specified cell."""
-        idx = self.cells.index(cell)
-        if idx >= len(self.cells):
-            raise IndexError("No cell after this")
+        if cell in self.cells:
+            idx = self.cells.index(cell)
+            if idx < len(self.cells):
+                return self.cells[idx+1]
+            else:
+                return False
         else:
-            return self.cells[idx+1]
+            return False
 
     def __str__(self):
         """
@@ -123,7 +208,14 @@ class Branch:
 
 
     def __len__(self):
-        return len(self.children)
+        """
+        Recursively find and return the total amount of branches
+        in this tree.
+        """
+        length = len(self.children)
+        for branch in self.children:
+            length += len(branch)
+        return length
 
 
 

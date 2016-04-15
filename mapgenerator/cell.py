@@ -51,6 +51,13 @@ class Cell:
         else:
             return False
 
+    def has_unvisited_neighbours(self):
+        """Return whether this cell has unvisited neighbours."""
+        for neighbour in self.neighbours.values():
+            if neighbour is not None and neighbour.is_not_visited():
+                return True
+        return False
+
     def remove_as_neighbour(self):
         for side, cell in self.neighbours.items():
             cell.neighbours[Side.opposite(side)] = None
