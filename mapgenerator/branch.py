@@ -17,6 +17,7 @@ class Branch:
         self.parent = parent
         self.name = name
         self.cells = []
+        self.childless_cells = []
         self.children = []
         self.activators = []
 
@@ -32,10 +33,16 @@ class Branch:
     def add_branch(self, other):
         """
         Add a branch to this branch's children, and make sure
-        they are in order.
+        they are in order. This also removes the cell from
+        the childless cells list.
         """
         try:
             i = self.cells.index(other.parent)
+            try:
+                self.childless_cells.remove(other.parent)
+            except ValueError:
+                # This may already be removed by another add
+                pass
             for idx,branch in enumerate(self.children):
                 if i < self.cells.index(branch.parent):
                     self.children.insert(idx, other)
@@ -46,15 +53,13 @@ class Branch:
             print(e)
             print(other.parent)
 
-    def childless_cells(self):
-        temp = list(self.cells)
-        for branch in self.children:
-            try:
-                temp.remove(branch.parent)
-            except ValueError:
-                # There can be two branches with the same parent
-                continue
-        return temp
+    def add_cell(self, cell):
+        """
+        Add a cell to this branch and to the childless 
+        cells list.
+        """
+        self.cells.append(cell)
+        self.childless_cells.append(cell)
 
     def find(self, cell):
         """Return the branch that contains cell."""
@@ -124,7 +129,7 @@ class Branch:
             return self.parent
 
     def get_by_name(self, name):
-        """Recursively find and return the branch with spec name."""
+        """Recursively find and return a specific branch."""
         name = int(name)
         print("NS, entering",self.name)
         if self.name == name:
@@ -164,11 +169,6 @@ class Branch:
                         chosen = other
             return chosen
                 
-                
-                
-
-
-    
     def prev(self, cell):
         """Return the cell that is before specified cell."""
         if cell in self.cells:

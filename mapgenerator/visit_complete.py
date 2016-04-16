@@ -31,10 +31,11 @@ def visit_complete(grid, visited_cells):
     print("Starting algorithm\nNumber of cells remaining: ",end="")
     while cells_remaining(grid):
         print(cells_remaining(grid), end=", ")
+
         if len(current_branch.cells) >= path_length_max and \
-                top_branch.childless_cells():
+                top_branch.childless_cells:
             # Limit the length of branches
-            current_cell = choice(top_branch.childless_cells())
+            current_cell = choice(top_branch.childless_cells)
             current_branch, b_name = new_branch(current_cell, \
                     top_branch, b_name)
 
@@ -43,7 +44,7 @@ def visit_complete(grid, visited_cells):
                 print("Knocking wall")
                 current_cell.knock_wall(side)
                 current_cell = current_cell.get_neighbour(side)
-                current_branch.cells.append(current_cell)
+                current_branch.add_cell(current_cell)
                 break
 
         else:
