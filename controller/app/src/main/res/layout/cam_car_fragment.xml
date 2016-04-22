@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:background="@android:color/transparent">
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:id="@+id/linearLayout1">
+
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_height="200dp"
+        android:layout_width="200dp"
+        android:id="@+id/horizontal_joystick"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:background="@drawable/joystick"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp">
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_height="200dp"
+        android:layout_width="200dp"
+        android:id="@+id/vertical_joystick"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:background="@drawable/joystick"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="false"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/menu_button"
+        android:text="@string/Car_view_Menu_Button"
+        android:clickable="true"
+        android:onClick="openMenu"
+        android:background="#ed1414"
+        android:layout_alignTop="@+id/linearLayout1"
+        android:layout_alignStart="@+id/linearLayout1"/>
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="130dp"
+        android:id="@+id/imageView2"
+        android:background="@drawable/camcarfont1"
+        android:layout_alignBottom="@+id/horizontal_joystick"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="181dp"/>
+
+</RelativeLayout>

@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">Controller</string>
     <string name="action_settings">Settings</string>
+
+    <string name="Start_Fragment_First_button">CamCar</string>
+    <string name="Start_Fragment_Second_button">GrabCar</string>
+    <string name="Start_Fragment_Third_button">BigCar</string>
+    <string name="Start_Fragment_LargeText">Welcome to Hell! </string>
+    <string name="Start_Fragment_MediumText">Choose a car, any car:</string>
+
+
+    <string name="Car_view_Menu_Button">MENU</string>
+
+    <string name="Switch_menu_largetext">Which car do you want to swap to?</string>
+    <string name="Switch_menu_mediumtext">Pick a car, any car:</string>
 </resources>

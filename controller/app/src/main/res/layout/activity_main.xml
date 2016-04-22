@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="com.controller.MainActivity">
+    android:fitsSystemWindows="false"
+    tools:context="com.controller.MainActivity"
+                                                 android:background="@drawable/backround7">
 
 
     <include layout="@layout/content_main" />

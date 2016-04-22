@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/backround2">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/Switch_menu_largetext"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="38dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/Switch_menu_mediumtext"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CANCEL"
+        android:id="@+id/cancel_button"
+        android:background="#f92f2f"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:onClick="goBack"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="26dp"/>
+
+    <ImageButton
+        android:layout_width="200dp"
+        android:layout_height="120dp"
+        android:id="@+id/cam_button"
+        android:background="@drawable/camcarfont1"
+        android:onClick="switchToCar"
+        android:clickable="true"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/grab_button"/>
+
+    <ImageButton
+        android:layout_width="200dp"
+        android:layout_height="130dp"
+        android:id="@+id/grab_button"
+        android:clickable="true"
+        android:onClick="switchToCar"
+        android:background="@drawable/grabcarfont2"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/textView2"/>
+
+    <ImageButton
+        android:layout_width="150dp"
+        android:layout_height="110dp"
+        android:id="@+id/big_button"
+        android:background="@drawable/bigcarfont2"
+        android:clickable="true"
+        android:onClick="switchToCar"
+        android:layout_alignTop="@+id/cam_button"
+        android:layout_toEndOf="@+id/grab_button"/>
+
+</RelativeLayout>
