@@ -5,7 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:background="#FFFFFF">
+    android:background="@android:color/transparent">
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -24,11 +24,11 @@
         android:id="@+id/horizontal_joystick"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:background="@drawable/joystick"
+        android:background="@drawable/joysticksliderright2"
+        android:layout_marginRight="15dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="8dp">
     </RelativeLayout>
 
     <RelativeLayout
@@ -37,11 +37,11 @@
         android:id="@+id/vertical_joystick"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:background="@drawable/joystick"
+        android:background="@drawable/joysticksliderleft2"
+        android:layout_marginLeft="15dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="false"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="20dp" />
+        android:layout_alignStart="@+id/menu_button"
+        android:layout_marginBottom="8dp"/>
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -55,12 +55,12 @@
         android:layout_alignTop="@+id/linearLayout1"
         android:layout_alignStart="@+id/linearLayout1"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="GRABCAR"
-        android:id="@+id/textView4"
-        android:layout_below="@+id/linearLayout1"
+    <ImageView
+        android:layout_width="210dp"
+        android:layout_height="140dp"
+        android:id="@+id/imageView3"
+        android:background="@drawable/grabcarfont2"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
+
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package joystick;
 
 import android.content.Context;
+import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 /**
@@ -59,6 +60,13 @@ public class VerticalJoystick extends Joystick
                It gets reset */
             isTouched = false;
             position = 0;
+
+            Vibrator v = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+
+            long[] pattern = {0, 300, 100, 300};
+            v.vibrate(pattern,-1);
+
         }
 
 

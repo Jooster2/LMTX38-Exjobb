@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -42,6 +43,7 @@ public class MainActivity extends Activity {
 
         wHelper = new WifiHelper (this);
     }
+    public WifiHelper getWifiHelper (){return wHelper;}
 
     public void openMenu (View v)
     {
@@ -85,6 +87,7 @@ public class MainActivity extends Activity {
             else if (rG.getCheckedRadioButtonId() == R.id.radioButton_grab)
             {
                 switcher.switchTo(2);
+                wHelper.connectTo("192.168.1.100");
             }
             else if (rG.getCheckedRadioButtonId() == R.id.radioButton_big)
             {
@@ -101,7 +104,7 @@ public class MainActivity extends Activity {
 
     }
 
-    public void sendToCar (int data)
+    public void sendToCar (short data)
     {
         wHelper.setNextData(data);
     }
@@ -109,6 +112,19 @@ public class MainActivity extends Activity {
     public void receiveDataFromWifi (Object o)
     {
 
+    }
+
+    public int getLastFragment ()
+    {
+        return lastFragment;
+    }
+    @Override
+    public void onBackPressed ()
+    {
+        if (switcher.getCurrentFragment() instanceof MenuFragment)
+        {
+            goBack(null);
+        }
     }
 
 }

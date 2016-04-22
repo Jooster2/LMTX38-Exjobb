@@ -27,4 +27,5 @@ public class BigCarFragment extends Fragment
         JoystickHelper helper = new JoystickHelper(v, this);
         return v;
     }
+
 }

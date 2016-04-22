@@ -51,9 +51,9 @@ public class Joystick
         Unlike the "theLayout" viariable, that is a fixed view in a fragment, this is a
         dynamically drawn on image, that should only appear when joystick is pressed.
         */
-        joystick = BitmapFactory.decodeResource(context.getResources(), R.drawable.joystick_pressed);
-        joystick_height = params.height/4;
-        joystick_width = params.width/4;
+        joystick = BitmapFactory.decodeResource(context.getResources(), R.drawable.joystick_pressed3);
+        joystick_height = params.height/3;
+        joystick_width = params.width/3;
         joystick = Bitmap.createScaledBitmap(joystick, joystick_width, joystick_height,
                                              false);
         //*******************************************************************************

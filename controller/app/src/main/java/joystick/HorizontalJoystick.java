@@ -3,6 +3,7 @@ package joystick;
 import android.content.Context;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
+import android.os.Vibrator;
 /**
  * Created by Carl-Henrik Hult on 2016-03-24.
  */
@@ -60,6 +61,11 @@ public class HorizontalJoystick extends Joystick
             isTouched = false;
             position = 0;
             exceededMinDis = false;
+
+            Vibrator v = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+            v.vibrate(500);
+
         }
 
 

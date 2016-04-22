@@ -4,13 +4,20 @@ import android.app.Activity;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingDeque;
+
 /**
  * Created by Carl-Henrik Hult on 2016-03-24.
  */
@@ -19,11 +26,11 @@ public class WifiHelper
     WifiManager wManager;
     MainActivity myActivity;
     ActiveThread activeThread;
-    int nextData;
+    ArrayBlockingQueue data;
     private PassiveThread listenerThread;
     private boolean listenForConnections = true;
 
-    private static final int PEER_PORT_NR = 49998;
+    private static final int PEER_PORT_NR = 50007;
     private static final int SERVER_PORT_NR = 49999;
 
     public WifiHelper (MainActivity mainActivity)
@@ -34,12 +41,28 @@ public class WifiHelper
     public void connectTo (String IP )
     {
         ActiveThread thread = new ActiveThread(IP);
+        data = new ArrayBlockingQueue<>(30);
+
+        try
+        {
+            data.put ((short)5);
+        } catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
         thread.start();
+
     }
 
-    public void setNextData (int data)
+    public void setNextData (short data)
     {
-        nextData = data;
+        try
+        {
+            this.data.put(data);
+        } catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -91,22 +114,45 @@ public class WifiHelper
             {
                 //Set up socket and streams
                 Socket socket = new Socket(peerIp, PEER_PORT_NR );
-                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                Log.i("myTag", "connected...");
+                PrintStream oos = new PrintStream(socket.getOutputStream());
+                DataInputStream ois = new DataInputStream(socket.getInputStream());
 
                 //Send, and then receive data
                 Log.i("myTag", "Transmitting and receiving...");
-                oos.writeObject(nextData);
-                final Object receivedData = ois.readObject();
+                while (true)
+                {
+                    try{
+                     short temp = (short)data.take();
+
+                        if(temp > 255)
+                        {
+                            oos.print(2);
+                            oos.print(temp);
+                            Log.i("myTag", "" + temp);
+                        }
+                        else if( temp< 256)
+                        {
+                            oos.print(1);
+                            oos.print(temp);
+                            //Log.i("myTag", "" + temp);
+                        }
+                    }
+                    catch(InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+                //final Object receivedData = ois.readShort();
 
                 //Clean up
-                oos.flush();
+                /*oos.flush();
                 oos.close();
                 ois.close();
                 socket.close();
-
+*/
                 //Handle received data
-
+/*
 
                 myActivity.runOnUiThread(new Runnable()
                 {
@@ -116,9 +162,10 @@ public class WifiHelper
                         myActivity.receiveDataFromWifi(receivedData);
                     }
                 });
-
-            } catch(IOException | ClassNotFoundException e)
+*/
+            } catch(IOException e)
             {
+
                 Log.i("myTag", e.getMessage());
                 e.printStackTrace();
             }
