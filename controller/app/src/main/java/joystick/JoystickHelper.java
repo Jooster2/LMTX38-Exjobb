@@ -16,6 +16,8 @@ public class JoystickHelper
     RelativeLayout horizontal_joystick, vertical_joystick; // Background layout of the joystick (the pad or whatever)
     HorizontalJoystick h_joystick; // The actual joystick (smaller version that goes on top of the pad)
     VerticalJoystick v_joystick;
+    double verticalLast = 0;
+    double horizontalLast = 0;
 
     public JoystickHelper (View view, final Fragment client)
     {
@@ -29,10 +31,13 @@ public class JoystickHelper
             public boolean onTouch(View view, MotionEvent event) {
                 h_joystick.drawJoystick(event);
                 double temp = h_joystick.getPosition();
-                if (temp < 0)
-                    System.out.println("LEFT: " + Math.abs(h_joystick.getPosition()));
-                else
-                    System.out.println("RIGHT: "+h_joystick.getPosition());
+                if(temp != horizontalLast) {
+                    if (temp < 0)
+                        System.out.println("LEFT: " + Math.abs(h_joystick.getPosition()));
+                    else
+                        System.out.println("RIGHT: " + h_joystick.getPosition());
+                    horizontalLast = temp;
+                }
                 return true;
             }
 
@@ -42,18 +47,18 @@ public class JoystickHelper
                 v_joystick.drawJoystick(event);
                 MainActivity act = (MainActivity)client.getActivity();
                 double temp = v_joystick.getPosition();
-                if (temp < 0)
-                {
-                    System.out.println("FORWARD: " + Math.abs(v_joystick.getPosition()));
-                    act.getWifiHelper().setNextData((short)(Math.abs(v_joystick.getPosition())*100 +256));
-                }
-                else
-                {
-                    System.out.println("BACKWARD: " + v_joystick.getPosition());
-                    act.getWifiHelper().setNextData((short) (Math.abs(v_joystick.getPosition()) * 100));
+                if(temp != verticalLast) {
+                    if (temp < 0) {
+                        System.out.println("FORWARD: " + Math.abs(v_joystick.getPosition()));
+                        act.getWifiHelper().setNextData((short) (Math.abs(v_joystick.getPosition()) * 100 + 256));
+                    } else {
+                        System.out.println("BACKWARD: " + v_joystick.getPosition());
+                        act.getWifiHelper().setNextData((short) (Math.abs(v_joystick.getPosition()) * 100));
+                    }
+                    verticalLast = temp;
                 }
 
-                    return true;
+                return true;
             }
 
         });

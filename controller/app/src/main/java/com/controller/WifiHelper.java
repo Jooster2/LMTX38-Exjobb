@@ -38,7 +38,7 @@ public class WifiHelper
         this.myActivity = mainActivity;
     }
 
-    public void connectTo (String IP )
+    public void connectTo (String IP)
     {
         ActiveThread thread = new ActiveThread(IP);
         data = new ArrayBlockingQueue<>(30);
@@ -140,6 +140,11 @@ public class WifiHelper
                     }
                     catch(InterruptedException e)
                     {
+                        e.printStackTrace();
+                    }
+                    try {
+                        sleep(20);
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }

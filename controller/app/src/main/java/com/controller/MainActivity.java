@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
             else if (rG.getCheckedRadioButtonId() == R.id.radioButton_grab)
             {
                 switcher.switchTo(2);
-                wHelper.connectTo("192.168.1.100");
+                wHelper.connectTo("alarmpi");
             }
             else if (rG.getCheckedRadioButtonId() == R.id.radioButton_big)
             {
