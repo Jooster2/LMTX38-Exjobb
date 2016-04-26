@@ -17,7 +17,7 @@ class Activator {
 };
 
 Activator A(5);
-Activator B(6, true);
+Activator B(6);
 Activator list[] = {A, B};
 Servo servo;
 
@@ -25,23 +25,26 @@ bool triggered = false;
 
 void setup() {
   servo.attach(outA);
+  servo.write(30);
 
 }
 
 void loop() {
   if(checkActivators()) {
     if(!triggered) {
+      Serial.println("Triggering");
       triggerModule();
       triggered = true;
     }
   } else {
     if(triggered) {
+      Serial.println("Reverting");
       revertModule();
       triggered = false;
     }
   }
   attemptActivation();
-  delay(50);
+  delay(20);
 
 }
 
@@ -49,14 +52,14 @@ void loop() {
  * Activates the module in whatever way it's supposed to.
  */
 void triggerModule() {
-  servo.write(90);
+  servo.write(120);
 }
 
 /**
  * Attempts to deactivate the module.
  */
 void revertModule() {
-  servo.write(0);
+  servo.write(30);
 }
 
 /**
@@ -65,7 +68,8 @@ void revertModule() {
 bool checkActivators() {
   bool results = true;
   for(int i = 0; i < sizeof(list) / sizeof(*list); i++) {
-    list[i].activate();
+    Serial.print("Results: ");
+    Serial.println(results);
     results &= list[i].active();
   }
   return results;
