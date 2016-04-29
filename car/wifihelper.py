@@ -1,4 +1,5 @@
 import socket
+import syslog
 from threading import Thread
 from threading import Lock
 import collections
@@ -13,10 +14,10 @@ class wifi_helper:
         self.start_thread()
     def start_thread(self):
         self.thread = Passive_thread()
-        self.thread.daemon = True
+        #self.thread.daemon = True
         self.thread.set_wh(self)
         self.active = Active_thread()
-        self.active.daemon = True
+        #self.active.daemon = True
         self.active.start()
         self.thread.start()
 
@@ -40,24 +41,31 @@ class Passive_thread(Thread):
             print ("In after bind")
             s.listen(5)
             while True:
-                print ("In while, before socket accept")
+                syslog.syslog (syslog.LOG_INFO,"In while, before socket accept")
                 c, addr = s.accept()
                 print ("In while, socket accepted")
                 connected = True
                 #'c' is a newly create socket usable for write
                 #and read on connection. addr is client addr,
                 #bound to socket.
-                print ('Got connection from ', addr)
+                syslog.syslog (syslog.LOG_INFO,'Got connection from '+ str(addr))
                 self.wh.active.set_connection (c)
                 while connected:
                     msg_size =c.recv(1)
-                    print ("FROM WIFI HELPER", msg_size)
-                    if int (msg_size) == 1:
-                        msg = c.recv (1)
-                    elif int(msg_size) == 2:
-                        msg = c.recv(2)
-                    if not msg:
+                    print "The size: ", msg_size
+                    if not msg_size:
                         connected = False
+                    else:
+                        msg_size = int (msg_size)
+                        if msg_size == 1:
+                            msg = int(c.recv (1))
+                            print ("When size is 1: ", msg)
+                        elif msg_size == 2:
+                            msg = int(c.recv(2))
+                            print ("When size is 2: ", msg)
+                        elif msg_size == 3:
+                            msg = int(c.recv(3))
+                            print ("When size is 3: ", msg)
                     if connected:
                         self.data.append(int (msg))
                         #print ("msg received")
