@@ -37,14 +37,13 @@ class PuzzleMaker:
             either.
         Rule 1 is a subset of rule 2 is a subset of rule 3.
         """
+        
 
+    def place_modules(self, branch):
+        """Place a module in a branch."""
 
-
-    def place_modules(self):
-        """Place modules along a path."""
-
-        # First choose a spot on the path, for module placement.
-        for cell in path:
+        # First choose a spot in the branch, for module placement.
+        for cell in branch:
             # Special case when dealing with the main path 
             # (contains finish point).
             if cell.is_finish:
@@ -55,10 +54,10 @@ class PuzzleMaker:
 
         # Choose a random module type, and make sure the dictionary 
         # is kept clean.
-        module = choice(modules.keys())
-        modules[module] -= 1
-        if modules[module] <= 0:
-            del modules[module]
+        module = choice(self.modules.keys())
+        self.modules[module] -= 1
+        if self.modules[module] <= 0:
+            del self.modules[module]
 
         # Replace the chosen cell with a new module
         mod = module(0,0)
