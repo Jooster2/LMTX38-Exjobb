@@ -8,10 +8,7 @@ def generate_maze(grid, s_pt, f_pt, algorithm="PTF"):
     """
     Generate a maze according the the specified algorithm. 
     """
-    if algorithm == "DFS":
-        depth_first(grid, s_pt, [])
-        print("\nAlgorithm finished correctly")
-    elif algorithm == "PTF":
+    if algorithm == "PTF":
         res = path_to_finish(grid, s_pt, f_pt)
         branch = visit_complete(grid, res)
         print("\nAlgorithm finished correctly")
@@ -25,23 +22,23 @@ def find_solution(current_cell, previous_cell=None):
     Return False if it is unsolvable (should not happen).
     """
     if current_cell.is_finish:
-        print("Found finish")
+        # Algorithm ends here.
         return [current_cell]
     elif len(current_cell.get_walls(False)) < 2 and \
             current_cell.is_start == False and \
             current_cell.is_finish == False:
-        print("False path")
+        # A dead end found.
         return []
     else:
         solution = [current_cell]
         for side in current_cell.get_walls(False):
+            # Check sides with knocked walls.
             if previous_cell is not \
                     current_cell.get_neighbour(side):
-                print("Branching to {}".format(side.name,))
+                # Skip checking the cell we came from (avoid inf. looping).
                 branch = find_solution(current_cell. \
                         get_neighbour(side), current_cell)
                 if branch:
-                    #print("Branch is true, extending solution")
                     solution.extend(branch)
                     return solution
         if len(solution) <= 1:

@@ -34,10 +34,14 @@ class Cell:
 
         self.neighbours[side] = neighbour
         if neighbour.neighbours[Side.opposite(side)] is None:
+            # Inform the neighbour about this cell.
             neighbour.set_neighbour(self, Side.opposite(side))
 
     def get_neighbour(self, side):
-        """Return the neighbour located on specified side."""
+        """
+        Return the neighbour located on specified side.
+        Return self if there is no neighbour to be found.
+        """
 
         if self.neighbours[side] is not None:
             return self.neighbours[side]
@@ -59,6 +63,7 @@ class Cell:
         return False
 
     def remove_as_neighbour(self):
+        """Remove this cell from it's neighbours lists."""
         for side, cell in self.neighbours.items():
             cell.neighbours[Side.opposite(side)] = None
 
@@ -78,6 +83,7 @@ class Cell:
             return False
 
     def knock_wall(self, side):
+        """Knock down the wall between two neighbours."""
         if self.walls[side] and self.neighbours[side] is not None:
             self.walls[side] = False
             self.neighbours[side].knock_wall(Side.opposite(side))

@@ -2,6 +2,7 @@ from enum import IntEnum
 from random import randrange, sample
 
 class Side(IntEnum):
+    """Sides are used by Cells to keep track of neighbours and walls."""
     UP = 0
     RIGHT = 1
     DOWN = 2
@@ -93,6 +94,7 @@ class Side(IntEnum):
 
 
 class Corner(IntEnum):
+    """Corners are like Sides, but they keep track of the quadrants."""
     TOP_R = 0
     BOT_R = 1
     BOT_L = 2
