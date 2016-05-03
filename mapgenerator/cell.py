@@ -47,6 +47,13 @@ class Cell:
             return self.neighbours[side]
         else:
             return self
+
+    def get_side(self, neighbour):
+        """Return the side the neighbour is on."""
+        for key, value in self.neighbours.items():
+            if value == neighbour:
+                return key
+        return None
     
     def is_neighbour(self, other):
         """Check whether this cell and the other are neighbours."""
@@ -58,7 +65,7 @@ class Cell:
     def has_unvisited_neighbours(self):
         """Return whether this cell has unvisited neighbours."""
         for neighbour in self.neighbours.values():
-            if neighbour is not None and neighbour.is_not_visited():
+            if neighbour and neighbour.is_not_visited():
                 return True
         return False
 
@@ -133,9 +140,6 @@ class Cell:
             self.set_neighbour(cell, side)
         for side, value in other.walls.items():
             self.walls[side] = value
-
-
-
 
 
     def coords(self):

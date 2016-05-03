@@ -1,4 +1,4 @@
-from random import sample, choice
+from random import sample, randint, choice
 from copy import copy
 from cmath import sqrt
 from math import ceil
@@ -44,7 +44,56 @@ class PuzzleMaker:
         branches = self.top_branch.get_basic_tree()
         branches.remove(self.top_branch)
         
-        for 
+        # Choose up to a third of the branches for levels.
+        chosen_branches = sample(branches, 
+                randint(len(branches)/3))
+
+        for branch in chosen_branches:
+            start = choice(branch.cells)
+            cells_to_start = branch.cells.index(start)
+            length = randint(1, len(branch.cells) - \
+                    cells_to_start)
+            height = randint(1, min(3, cells_to_start))
+            start_height = 1
+
+            chosen_cells = branch.cells[branch.cells.index(start):]
+            leveled_cells = self.to_leveled(chosen_cells, branch)
+
+            for idx, cell in enumerate(leveled_cells):
+                if idx > 0:
+                    prev = leveled_cells[idx-1]
+                if idx < len(leveled_cells):
+                    nxt = leveled_cells[idx+1]
+
+                if idx == 0:
+                    side = cell.get_side(nxt)
+                    corner = choice(Side.convert_to_corner(side))
+                    cell.set_levels(corner, start_height)
+                    start_height += 1
+
+                else:
+                    prev_side = cell.get_side(prev)
+                    next_side = cell.get_side(nxt)
+                    if next_side is Side.opposite(prev_side):
+
+
+
+
+
+
+
+                
+
+    def to_leveled(self, chosen_cells, branch):
+        """Remake cells in list into LeveledCells."""
+        leveled_cells = []
+        for cell in chosen_cells:
+            lvl_cell = LeveledCell(0,0)
+            lvl_cell.transmute(cell)
+            branch.cells[branch.cells.index(cell)] = lvl_cell
+            leveled_cells.append(lvl_cell)
+        return leveled_cells
+
 
     def make_puzzles(self):
         """
