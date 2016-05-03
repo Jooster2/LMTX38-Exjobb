@@ -94,11 +94,11 @@ class Branch:
     def get_basic_tree(self):
         """Recursively find all branches in this branch."""
         if not self.children:
-            return []
+            return [self]
         else:
             temp = []
             for branch in self.children:
-                temp.extend(get_basic_tree(branch))
+                temp.extend(branch.get_basic_tree())
             return temp
 
     def get_extensive_tree(self):
@@ -111,6 +111,7 @@ class Branch:
             for cell in b.activators:
                 branches.extend(cell.module.branch.get_basic_tree())
         return branches
+
 
     def get_parent(self):
         """

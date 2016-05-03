@@ -9,16 +9,42 @@ from activator_cell import ActivatorCell
 from complex_cell import ComplexCell
 from directions import Side, Corner
 from algorithms import Branch
+from car import Car
 
 
 class PuzzleMaker:
     """PuzzleMaker creates puzzles of all kinds on the map."""
 
     def __init__(self, grid, branch, modules, activators):
+        """
+        Constructor
+
+        grid -- the map grid
+        branch -- the top branch (from visit_complete)
+        modules -- dict with module-class-objects as keys and 
+        amount as value
+        activators -- dict with activator-class-objects as keys
+        and amount as value
+        """
+
         self.grid = grid
         self.top_branch = branch
         self.modules = modules
         self.activators = activators
+
+        # Dict of cars to keep track of which is in use.
+        self.cars = {Car.BIG: False,
+                     Car.CAM: False,
+                     Car.GRAB: False}
+
+    def make_levels(self):
+        """Create levels on some branches."""
+
+        # Get all branches except for the top.
+        branches = self.top_branch.get_basic_tree()
+        branches.remove(self.top_branch)
+        
+        for 
 
     def make_puzzles(self):
         """
@@ -37,21 +63,24 @@ class PuzzleMaker:
             either.
         Rule 1 is a subset of rule 2 is a subset of rule 3.
         """
+        branch = self.top_branch
+        while modules and activators:
+            module = self.place_module(branch)
+            activators = self.place_activators(module, branch)
 
 
-
-    def place_modules(self):
-        """Place modules along a path."""
+    def place_module(self, branch):
+        """Place modules in a branch."""
 
         # First choose a spot on the path, for module placement.
-        for cell in path:
+        for cell in branch.cells:
             # Special case when dealing with the main path 
             # (contains finish point).
             if cell.is_finish:
                 placement = cell
                 break
         else:
-            placement = choice(path)
+            placement = choice(branch.cells)
 
         # Choose a random module type, and make sure the dictionary 
         # is kept clean.
@@ -68,20 +97,18 @@ class PuzzleMaker:
         return mod
 
 
-    def place_activators(mod, amount=(1,3)):
+    def place_activators(mod, branch, amount=(1,3)):
         """
         Place activators anywhere in the grid not behind a module.
         
         mod -- the module that will get activators
+        branch -- the branch the module is located in
         amount -- tuple with a minimum and maximum of activators 
         to place
         """
 
-        for cell in reversed(main_path):
-           
-
-
         
+
 
 
 
