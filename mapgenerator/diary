@@ -1,0 +1,9 @@
+Diary until report can be filled in.
+
+Since puzzle making would be very difficult to do with "current" 
+methodology, created branch-class to keep track of everything. 
+Remade the DFS, now called visit_complete, to use the new branch
+class for everything.
+
+next comes puzzle making. report should include the three rules
+for activator placement.
