@@ -33,6 +33,8 @@ class Cell:
         """
 
         self.neighbours[side] = neighbour
+        if neighbour is None:
+            return
         if neighbour.neighbours[Side.opposite(side)] is None:
             # Inform the neighbour about this cell.
             neighbour.set_neighbour(self, Side.opposite(side))
@@ -72,7 +74,8 @@ class Cell:
     def remove_as_neighbour(self):
         """Remove this cell from it's neighbours lists."""
         for side, cell in self.neighbours.items():
-            cell.neighbours[Side.opposite(side)] = None
+            if cell:
+                cell.neighbours[Side.opposite(side)] = None
 
     def add_outer_wall(self, side):
         """Add an outer wall to this cell on specified side."""

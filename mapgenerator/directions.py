@@ -87,17 +87,17 @@ class Side(IntEnum):
 
     def convert_to_corner(side):
         """
-        Return a tuple of Corners that together form the given 
+        Return a list of Corners that together form the given 
         Side.
         """
         if side is Side.UP:
-            return (Corner.TOP_R, Corner.TOP_L)
+            return [Corner.TOP_R, Corner.TOP_L]
         elif side is Side.RIGHT:
-            return (Corner.TOP_R, Corner.BOT_R)
+            return [Corner.TOP_R, Corner.BOT_R]
         elif side is Side.DOWN:
-            return (Corner.BOT_L, Corner.BOT_R)
+            return [Corner.BOT_L, Corner.BOT_R]
         elif side is Side.LEFT:
-            return (Corner.TOP_L, Corner.BOT_L)
+            return [Corner.TOP_L, Corner.BOT_L]
 
 
 class Corner(IntEnum):
@@ -110,12 +110,13 @@ class Corner(IntEnum):
     TOP_L = 3
 
     
-    def convert_to_side(corners: tuple):
+    def convert_to_side(corners):
         """
         Return a Side if the two corners are next to each other, 
         otherwise None.
         """
-        if set(corners).issubset(Side.convert_to_corner(Side.UP)):
+        if set(corners).issubset(Side.convert_to_corner(
+            Side.UP)):
             return Side.UP
         elif set(corners).issubset(Side.convert_to_corner(
             Side.RIGHT)):
@@ -126,10 +127,38 @@ class Corner(IntEnum):
         elif set(corners).issubset(Side.convert_to_corner(
             Side.LEFT)):
             return Side.LEFT
+
+    def neighbour_single(corner, side):
+        """
+        Return a Corner that is next to parameter corner, and is 
+        part of parameter side.
+        """
+        side_corners = Side.convert_to_corner(side)
+        neighbours = Corner.neighbours(corner)
+        return (set(side_corners) & set(neighbours)).pop()
+
+
+    def neighbours(corner):
+        """
+        Return a tuple of the corners that are next to this corner.
+        """
+        if corner is Corner.TOP_R:
+            return (Corner.TOP_L, Corner.BOT_R)
+        elif corner is Corner.BOT_R:
+            return (Corner.TOP_R, Corner.BOT_L)
+        elif corner is Corner.BOT_L:
+            return (Corner.BOT_R, Corner.TOP_L)
+        elif corner is Corner.TOP_L:
+            return (Corner.BOT_L, Corner.TOP_R)
+
+    def are_neighbours(c1, c2):
+        """Return True if c2 is a neighbour to c1."""
+        return c2 in Corner.neighbours(c1)
         
     def random_all():
         """Return a list of all four Corners, in random order."""
         return sample(list(Corner), 4)
+
 
 
 

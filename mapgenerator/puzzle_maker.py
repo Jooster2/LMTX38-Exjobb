@@ -8,7 +8,7 @@ from leveled_cell import LeveledCell
 from activator_cell import ActivatorCell
 from complex_cell import ComplexCell
 from directions import Side, Corner
-from algorithms import Branch
+from algorithm import Branch
 from car import Car
 
 
@@ -42,46 +42,101 @@ class PuzzleMaker:
 
         # Get all branches except for the top.
         branches = self.top_branch.get_basic_tree()
+        print("Branch-len1:",len(branches))
         branches.remove(self.top_branch)
+        print("Branch-len2:",len(branches))
+
         
         # Choose up to a third of the branches for levels.
         chosen_branches = sample(branches, 
-                randint(len(branches)/3))
+                randint(1, int(len(branches)/3)))
 
         for branch in chosen_branches:
-            start = choice(branch.cells)
-            cells_to_start = branch.cells.index(start)
-            length = randint(1, len(branch.cells) - \
+            if len(branch.cells) <= 2:
+                continue
+            start = choice(branch.cells[:int(len(branch.cells)/2)])
+            cells_to_start = branch.cells.index(start)+1
+            length = randint(2, len(branch.cells) - \
                     cells_to_start)
-            height = randint(1, min(3, cells_to_start))
-            start_height = 1
+            goal_height = randint(1, min(3, cells_to_start))
+            height = 1
 
-            chosen_cells = branch.cells[branch.cells.index(start):]
+            chosen_cells = branch.cells[cells_to_start: \
+                    cells_to_start + length]
             leveled_cells = self.to_leveled(chosen_cells, branch)
 
             for idx, cell in enumerate(leveled_cells):
+
+                # Get previous and next cells.
                 if idx > 0:
                     prev = leveled_cells[idx-1]
-                if idx < len(leveled_cells):
+                if idx+1 < len(leveled_cells):
                     nxt = leveled_cells[idx+1]
 
                 if idx == 0:
-                    side = cell.get_side(nxt)
-                    corner = choice(Side.convert_to_corner(side))
-                    cell.set_levels(corner, start_height)
-                    start_height += 1
+                    # First cell special case.
+                    next_side = cell.get_side(nxt)
+                    corner = choice(Side.convert_to_corner(next_side))
+                    cell.set_levels(corner, height)
+
+                elif idx == len(leveled_cells)-1:
+                    # Last cell special case.
+                    prev_side = cell.get_side(prev)
+                    # TODO fill in with some randomized ending.
 
                 else:
+                    # All cells between first and last.
                     prev_side = cell.get_side(prev)
                     next_side = cell.get_side(nxt)
+                    prev_corner = prev.get_level_corner( \
+                            Side.opposite(prev_side))
                     if next_side is Side.opposite(prev_side):
+                        # If we are going straight across this cell.
+                        # Get the first corner.
+                        corners = [Corner.neighbour_single( \
+                                prev_corner, prev_side)]
+                        # Get the second corner.
+                        corners.append(Corner.neighbour_single( \
+                                corners[0], next_side))
+
+                        # Check that no path is cut of with levels.
+                        broken_walls = cell.get_walls(intact=False)
+                        if len(broken_walls) > 2:
+                            # This is a three or four way crossing.
+                            broken_walls.remove(next_side)
+                            broken_walls.remove(prev_side)
+                            if Corner.convert_to_side(corners) in \
+                                    broken_walls:
+                                break
+                        # Make levels.
+                        cell.set_levels(corners, height)
+
+                    elif prev_corner in Side.convert_to_corner(next_side):
+                        # If we are doing an "inner" turn.
+                        corner = Corner.neighbour_single(prev_corner, next_side)
+                        cell.set_levels(corner, height)
+
+                    else:
+                        # Check that no path is cut of with levels.
+                        if len(cell.get_walls(intact=False)) > 2:
+                            break
+                        # If we are doing an "outer" turn.
+                        # Get all corners.
+                        corners = list(Corner)
+                        # Remove the one that is not part of the turn.
+                        good_corner = Corner.neighbour_single( \
+                                prev_corner, prev_side)
+                        bad_corners = Side.convert_to_corner(prev_side)
+                        bad_corners.remove(good_corner)
+                        corners.remove(bad_corners[0])
 
 
+                        cell.set_levels(corners, height)
 
-
-
-
-
+                # TODO Height incrementation should maybe be smarter.
+                if height < goal_height:
+                    height += 1
+                                 
                 
 
     def to_leveled(self, chosen_cells, branch):
@@ -92,6 +147,7 @@ class PuzzleMaker:
             lvl_cell.transmute(cell)
             branch.cells[branch.cells.index(cell)] = lvl_cell
             leveled_cells.append(lvl_cell)
+            self.grid[cell.pos_x][cell.pos_y] = lvl_cell
         return leveled_cells
 
 

@@ -24,7 +24,7 @@ class LeveledCell(Cell):
             for corner in corners:
                 self.levels[corner] = level
         elif type(corners) is Corner:
-            self.levels[corner] = level
+            self.levels[corners] = level
 
     def get_levels(self):
         """Return a list of corners that have a height > 0."""
@@ -33,6 +33,17 @@ class LeveledCell(Cell):
             if value > 0:
                 temp.append(key)
         return temp
+
+    def get_level_corner(self, side):
+        """
+        Return the corner, if any, that belongs to parameter side
+        and has a height > 0. In theory this could be two corners,
+        but in practice it never should be.
+        """
+        corners = Side.convert_to_corner(side)
+        for corner in corners:
+            if self.levels[corner] > 0:
+                return corner
 
     def is_flat(self):
         """

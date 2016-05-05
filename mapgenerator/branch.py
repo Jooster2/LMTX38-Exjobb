@@ -96,7 +96,7 @@ class Branch:
         if not self.children:
             return [self]
         else:
-            temp = []
+            temp = [self]
             for branch in self.children:
                 temp.extend(branch.get_basic_tree())
             return temp

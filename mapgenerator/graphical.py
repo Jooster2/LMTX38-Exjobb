@@ -3,7 +3,8 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 
 from cell import Cell
-from directions import Side
+from leveled_cell import LeveledCell
+from directions import Side, Corner
 
 root = Tk()
 root.attributes("-fullscreen", True)
@@ -45,6 +46,20 @@ def create_cell_images(cell_grid, solution=[]):
             if cell.is_finish:
                 img.paste("green", (e_x-20,e_y-20,e_x+20,e_y+20))
 
+            # Handle leveled cells.
+            if isinstance(cell, LeveledCell):
+                for key, value in cell.levels.items():
+                    coords = corner_conversion(s_x, key)
+                    if value == 0:
+                        continue
+                    elif value == 1:
+                        img.paste("yellow", coords)
+                    elif value == 2:
+                        img.paste("orange", coords)
+                    elif value == 3:
+                        img.paste("brown", coords)
+
+            # Handle walls.
             for wall in cell.get_walls():
                 if wall is Side.UP:
                     img.paste("black", (0,0,s_x,w_y))
@@ -57,3 +72,17 @@ def create_cell_images(cell_grid, solution=[]):
 
             img_grid[idx].append(ImageTk.PhotoImage(img))
     return img_grid
+    
+def corner_conversion(size, corner):
+    """Return a quad-tuple representing specified corner."""
+    h_size = int(size/2)
+    if corner is Corner.TOP_R:
+        return (h_size,0,size,h_size)
+    elif corner is Corner.BOT_R:
+        return (h_size,h_size,size,size)
+    elif corner is Corner.BOT_L:
+        return (0,h_size,h_size,size)
+    elif corner is Corner.TOP_L:
+        return (0,0,h_size,h_size)
+
+

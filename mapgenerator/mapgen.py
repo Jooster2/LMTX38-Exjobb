@@ -11,6 +11,7 @@ from graphical import create_cell_images, display
 from car import Car
 from door_module import DoorModule
 from button_act import ButtonActivator
+from puzzle_maker import PuzzleMaker
 
 
 def create_grid(size_x, size_y):
@@ -75,7 +76,9 @@ if __name__ == '__main__':
     size_y = 8
     grid, outer_walled = create_grid(size_x, size_y)
     s_pt, f_pt = create_endpoints(outer_walled)
-    generate_maze(grid, s_pt, f_pt)
+    branch = generate_maze(grid, s_pt, f_pt)
+    puzzle_maker = PuzzleMaker(grid, branch, None, None)
+    puzzle_maker.make_levels()
 
     print("Starting solving algorithm")
     solution = find_solution(s_pt)
