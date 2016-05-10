@@ -18,6 +18,7 @@ import fragments.StartFragment;
 public class MainActivity extends Activity {
     FragmentSwitcher switcher;
     int lastFragment;
+    boolean isActivated;
     WifiHelper wHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class MainActivity extends Activity {
 
         switcher = new FragmentSwitcher(getFragmentManager(), findViewById(R.id.fragment_container), fragments);
         switcher.addFragment(0);
-
+        isActivated = false;
         wHelper = new WifiHelper (this);
     }
     public WifiHelper getWifiHelper (){return wHelper;}
@@ -62,6 +63,13 @@ public class MainActivity extends Activity {
 
         switcher.switchTo(4); // Switch to menu_fragment.
     }
+    public boolean getActivated(){return isActivated;}
+    public void toggleSpecial(View v){
+        if (isActivated)
+            isActivated = false;
+        else
+            isActivated = true;
+    }
 
     public void switchToCar(View v)
     {
@@ -71,11 +79,16 @@ public class MainActivity extends Activity {
         }
         else if (findViewById(R.id.grab_button) == v)
         {
-            switcher.switchTo (2);
+            wHelper.connectTo("grabcar");
+            switcher.switchTo(2);
+
+
         }
         else if (findViewById(R.id.big_button) == v)
         {
-            switcher.switchTo (3);
+            wHelper.connectTo("bigcar");
+            switcher.switchTo(3);
+
         }
         else if (findViewById(R.id.start_button)== v)
         {
@@ -86,12 +99,15 @@ public class MainActivity extends Activity {
             }
             else if (rG.getCheckedRadioButtonId() == R.id.radioButton_grab)
             {
+                wHelper.connectTo("grabcar");
                 switcher.switchTo(2);
-                wHelper.connectTo("alarmpi");
+
             }
             else if (rG.getCheckedRadioButtonId() == R.id.radioButton_big)
             {
+                wHelper.connectTo("bigcar");
                 switcher.switchTo(3);
+
             }
         }
 
@@ -104,9 +120,72 @@ public class MainActivity extends Activity {
 
     }
 
-    public void sendToCar (short data)
+    public void sendToCar (String dataFrom , double data)
     {
-        wHelper.setNextData(data);
+        if(dataFrom == "HORIZONTAL")
+        {
+
+
+            if(data < 0)
+            {
+                if(getActivated() && switcher.getCurrentFragment() instanceof BigCarFragment )
+                {
+                    System.out.println("LEFT Activated: " + Math.abs(data));
+                    wHelper.setNextData((short) (Math.abs(data) * 100 + 256 + 128 + 512));
+                }
+                else
+                {
+                    System.out.println("LEFT: " + Math.abs(data));
+                    wHelper.setNextData((short) (Math.abs(data) * 100 + 256 + 128));
+
+                }
+            }
+
+            else
+            {
+                if(getActivated() && switcher.getCurrentFragment() instanceof BigCarFragment)
+                {
+                    System.out.println("RIGHT: " + data);
+                    wHelper.setNextData((short) (Math.abs(data) * 100 + 128 + 512));
+                }
+                else
+                {
+                    System.out.println("RIGHT: " + data);
+                    wHelper.setNextData((short) (Math.abs(data) * 100 + 128));
+
+                }
+            }
+        }
+        else if (dataFrom == "VERTICAL")
+        {
+            if (getActivated() && switcher.getCurrentFragment() instanceof BigCarFragment)
+            {
+                if(data < 0)
+                {
+                    System.out.println("FORWARD: " + Math.abs(data));
+                    wHelper.setNextData((short) (Math.abs(data) * 100 + 256 + 512));
+                }
+                else
+                {
+                    System.out.println("BACKWARD: " + data);
+                    wHelper.setNextData((short) (Math.abs(data) * 100 + 512));
+                }
+            }
+            else
+            {
+                if(data < 0)
+                {
+                    System.out.println("FORWARD: " + Math.abs(data));
+                    wHelper.setNextData((short) (Math.abs(data) * 100 + 256 ));
+                }
+                else
+                {
+                    System.out.println("BACKWARD: " + data);
+                    wHelper.setNextData((short) (Math.abs(data) * 100));
+                }
+
+            }
+        }
     }
 
     public void receiveDataFromWifi (Object o)

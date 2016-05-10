@@ -24,7 +24,7 @@
         android:id="@+id/horizontal_joystick"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:background="@drawable/joystick2"
+        android:background="@drawable/joysticksliderright"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="20dp"
@@ -37,7 +37,7 @@
         android:id="@+id/vertical_joystick"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:background="@drawable/joystick"
+        android:background="@drawable/joysticksliderleft"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="false"
         android:layout_marginLeft="20dp"
@@ -62,5 +62,17 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/bigcarfont2"
         android:layout_above="@+id/horizontal_joystick"/>
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:id="@+id/button"
+        android:layout_alignTop="@+id/menu_button"
+        android:layout_alignParentEnd="true"
+        android:clickable="true"
+        android:onClick="toggleSpecial"
+        android:layout_marginRight="5dp"
+        android:background="#e50bfe"/>
 
 </RelativeLayout>

@@ -1,24 +1,29 @@
 package joystick;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
+
+import com.controller.MainActivity;
 /**
  * Created by Carl-Henrik Hult on 2016-03-24.
  */
 public class VerticalJoystick extends Joystick
 {
     double minDistance = 0;
-    public VerticalJoystick(Context context, RelativeLayout theLayout, double minDistance)
+    MainActivity activity;
+    public VerticalJoystick(Context context, RelativeLayout theLayout, double minDistance, Activity activity)
     {
         super(context, theLayout);
         if (minDistance >= 0)
         {
             this.minDistance = minDistance;
         }
-        draw.position(params.width/2, params.height/2);
+        draw.position(params.width / 2, params.height / 2);
         draw();
+        this.activity =(MainActivity) activity;
     }
 
     public void drawJoystick(MotionEvent event)
@@ -54,13 +59,18 @@ public class VerticalJoystick extends Joystick
         }
         else if (action == MotionEvent.ACTION_UP)
         {
-            draw.position(params.width / 2, params.height / 2);
-            draw();
-            /* Since this action means the joystick is released, it is no longer touched,
-               It gets reset */
-            isTouched = false;
-            position = 0;
-
+            if (!activity.getActivated())
+            {
+                draw.position(params.width / 2, params.height / 2);
+                draw();
+                /* Since this action means the joystick is released, it is no longer touched,
+                 It gets reset */
+                isTouched = false;
+                position = 0;
+            }
+            else {
+                isTouched = false;
+            }
             Vibrator v = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
             // Vibrate for 500 milliseconds
 

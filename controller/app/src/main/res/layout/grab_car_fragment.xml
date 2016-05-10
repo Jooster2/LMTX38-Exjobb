@@ -63,4 +63,17 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:id="@+id/button"
+        android:layout_alignTop="@+id/menu_button"
+        android:layout_alignParentEnd="true"
+        android:clickable="true"
+        android:onClick="toggleSpecial"
+        android:layout_marginRight="5dp"
+        android:background="#e50bfe"/>
+
 </RelativeLayout>
