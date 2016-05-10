@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -21,95 +22,74 @@ import java.util.concurrent.BlockingDeque;
 /**
  * Created by Carl-Henrik Hult on 2016-03-24.
  */
-public class WifiHelper
-{
+public class WifiHelper {
     WifiManager wManager;
     MainActivity myActivity;
     ActiveThread thread;
+    PassiveThread passiveThread;
     ArrayBlockingQueue data;
-    //private PassiveThread listenerThread;
     private boolean listenForConnections = true;
 
     private static final int PEER_PORT_NR = 50007;
     private static final int SERVER_PORT_NR = 49999;
 
 
-    public WifiHelper (MainActivity mainActivity)
-    {
+    public WifiHelper(MainActivity mainActivity) {
         this.myActivity = mainActivity;
     }
 
-    public void connectTo (String IP)
-    {
-        if (thread != null)
-        {
+    public void connectTo(String IP) {
+        if (thread != null) {
             thread.stopThread();
         }
         thread = new ActiveThread(IP);
         data = new ArrayBlockingQueue<>(30);
 
 
-        try
-        {
-            data.put ((short)5);
-        } catch(InterruptedException e)
-        {
+        try {
+            data.put((short) 5);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         thread.start();
 
     }
 
-    public void setNextData (short data)
-    {
-        try
-        {
+    public void setNextData(short data) {
+        try {
             this.data.put(data);
-        } catch(InterruptedException e)
-        {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-
-
-    /**
-     * Starts the thread that listens for incoming connections from peer
-     *//*
-    public void startThread()
-    {
-        if(listenerThread == null || !listenerThread.isAlive())
-        {
-            listenForConnections = true;
-            listenerThread = new PassiveThread();
-            listenerThread.start();
-        }
+    public void startPassive() {
+        passiveThread = new PassiveThread(thread.getSocket(), myActivity);
+        passiveThread.start();
     }
 
-    /**
-     * Stops the thread that listens for incoming connections from peer
-     *//*
-    public void stopThread()
-    {
-        listenForConnections = false;
-        listenerThread.stopThread();
+    public void stopPassive() {
+        passiveThread.stopThread();
     }
 
     /**
      * This thread can connect to a peer, exchange data, and send it to MainActivity
      */
-    class ActiveThread extends Thread
-    {
+    class ActiveThread extends Thread {
         String peerIp;
         Socket socket;
 
         /**
          * Constructor. Initializes thread
+         *
          * @param ip The ip address to connect to
          */
-        public ActiveThread(String ip)
-        {
+        public ActiveThread(String ip) {
             peerIp = ip;
+        }
+
+        public Socket getSocket() {
+            return socket;
         }
 
         /**
@@ -117,10 +97,8 @@ public class WifiHelper
          */
         @Override
         @SuppressWarnings("unchecked")
-        public void run()
-        {
-            try
-            {
+        public void run() {
+            try {
                 //Set up socket and streams
                 socket = new Socket(peerIp, PEER_PORT_NR);
                 Log.i("myTag", "connected...");
@@ -129,176 +107,103 @@ public class WifiHelper
 
                 //Send, and then receive data
                 Log.i("myTag", "Transmitting and receiving...");
-                while(true)
-                {
-                    try
-                    {
+                while (true) {
+                    try {
                         short temp = (short) data.take();
-                        if (temp > 999){
+                        if (temp > 999) {
                             oos.print(4);
                             oos.print(temp);
                             Log.i("myTag", "" + temp);
-                        }
-                        else if( temp < 1000 && temp > 100)
-                        {
+                        } else if (temp < 1000 && temp > 100) {
                             oos.print(3);
                             oos.print(temp);
                             Log.i("myTag", "" + temp);
-                        }
-                        else if(9 < temp && temp < 100)
-                        {
+                        } else if (9 < temp && temp < 100) {
                             oos.print(2);
                             oos.print(temp);
                             Log.i("myTag", "" + temp);
-                        }
-                        else if(0 < temp && temp < 10)
-                        {
+                        } else if (0 < temp && temp < 10) {
                             oos.print(1);
                             oos.print(temp);
                             Log.i("myTag", "" + temp);
-                        }
-                        else if(temp == 0)
-                        {
+                        } else if (temp == 0) {
                             oos.print(1);
                             oos.print(1);
                         }
-                    } catch(InterruptedException e)
-                    {
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    try
-                    {
+                    try {
                         sleep(20);
-                    } catch(InterruptedException e)
-                    {
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                //final Object receivedData = ois.readShort();
-
-                //Clean up
-                /*oos.flush();
-                oos.close();
-                ois.close();
-                socket.close();
-*/
-                //Handle received data
-/*
-
-                myActivity.runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        myActivity.receiveDataFromWifi(receivedData);
-                    }
-                });
-*/
-            } catch(IOException e)
-            {
+            } catch (IOException e) {
 
                 Log.i("myTag", e.getMessage());
                 e.printStackTrace();
             }
         }
-            public void stopThread()
-            {
-                try
-                {
-                    if (socket != null)
-                    {
-                        socket.close();
-                    }
-                }
-                catch(IOException e)
-                {
-                    e.printStackTrace();
-                }
-                finally
-                {
-                    interrupt();
-                }
-            }
-        }
-    }
-    /**
-     * This thread listens for a connection, exchanges data, and sends it to MainActivity
-     */
-    /*class PassiveThread extends Thread
-    {
-        ServerSocket serverSocket = null;
 
-        /**
-         * This runnable is the core of the thread. Preforms the actual network operations.
-         *//*
-        @Override
-        @SuppressWarnings("unchecked")
-        public void run()
-        {
-            while(listenForConnections)
-            {
-                try
-                {
-                    //Set up socket
-                    serverSocket = new ServerSocket();
-                    serverSocket.setReuseAddress(true);
-                    serverSocket.bind(new InetSocketAddress(PEER_PORT_NR));
-
-                    //Accept connection and set up streams
-                    Socket client = serverSocket.accept();
-                    ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
-                    ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
-
-                    //Receive, and then send data
-                    Log.i("myTag", "Receiving and sending...");
-                    final Object receivedData = ois.readObject();
-                    oos.writeObject(null);
-
-                    //Clean up
-                    ois.close();
-                    oos.flush();
-                    oos.close();
-                    client.close();
-                    serverSocket.close();
-
-                    myActivity.runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            myActivity.receiveDataFromWifi(receivedData);
-                        }
-                    });
+        public void stopThread() {
+            try {
+                if (socket != null) {
+                    socket.close();
                 }
-                catch(IOException | ClassNotFoundException e)
-                {
-                    Log.i("myTag", e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        /**
-         * Interrupts the thread and stops it from listening for connections
-         */
-    /*
-        public void stopThread()
-        {
-            try
-            {
-                if (serverSocket != null)
-                {
-                    serverSocket.close();
-                }
-            }
-            catch(IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
-            }
-            finally
-            {
+            } finally {
                 interrupt();
             }
         }
-    } */
+    }
 
+    class PassiveThread extends Thread {
+        private Socket socket = null;
+        private MainActivity mainActivity;
+        private boolean connected = false;
+
+        public PassiveThread(Socket socket, MainActivity activity) {
+            this.socket = socket;
+            mainActivity = activity;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public void run() {
+            try {
+                connected = true;
+                DataInputStream dis = new DataInputStream(socket.getInputStream());
+
+                while(true) {
+                    int length = dis.readInt();
+                    byte[] imageData = new byte[length];
+                    dis.read(imageData, 0, length);
+
+                    final byte[] imgData = imageData;
+                    mainActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mainActivity.receiveImageDataFromWifi(imgData);
+                        }
+                    });
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        public void stopThread() {
+            try {
+                if (socket != null) {
+                    socket.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                interrupt();
+            }
+        }
+    }
+}

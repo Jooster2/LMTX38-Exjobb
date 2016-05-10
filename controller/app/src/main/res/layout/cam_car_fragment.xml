@@ -5,19 +5,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:background="@android:color/transparent">
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="10dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:id="@+id/linearLayout1">
+    android:background="@android:color/transparent"
+    android:id="@+id/cam_bground">
 
-    </LinearLayout>
     <RelativeLayout
         android:layout_height="200dp"
         android:layout_width="200dp"
@@ -52,13 +42,13 @@
         android:clickable="true"
         android:onClick="openMenu"
         android:background="#ed1414"
-        android:layout_alignTop="@+id/linearLayout1"
-        android:layout_alignStart="@+id/linearLayout1"/>
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp" />
 
     <ImageView
         android:layout_width="200dp"
         android:layout_height="130dp"
-        android:id="@+id/imageView2"
+        android:id="@+id/cam_logo"
         android:background="@drawable/camcarfont1"
         android:layout_alignBottom="@+id/horizontal_joystick"
         android:layout_centerHorizontal="true"

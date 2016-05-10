@@ -5,7 +5,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    android:id="@+id/big_bground">
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -58,7 +59,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
+        android:id="@+id/big_logo"
         android:layout_centerHorizontal="true"
         android:background="@drawable/bigcarfont2"
         android:layout_above="@+id/horizontal_joystick"/>

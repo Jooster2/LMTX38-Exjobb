@@ -1,10 +1,13 @@
 package fragments;
 
 import android.app.Fragment;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import joystick.HorizontalJoystick;
@@ -20,10 +23,16 @@ public class CamCarFragment extends Fragment
     RelativeLayout horizontal_joystick, vertical_joystick; // Background layout of the joystick (the pad or whatever)
     HorizontalJoystick h_joystick; // The actual joystick (smaller version that goes on top of the pad)
     VerticalJoystick v_joystick;
+
+    private ImageView logo;
+    private RelativeLayout bground;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        logo = (ImageView)getView().findViewById(R.id.cam_logo);
+        bground = (RelativeLayout)getView().findViewById(R.id.cam_bground);
+
 
     }
 
@@ -34,5 +43,17 @@ public class CamCarFragment extends Fragment
 
         JoystickHelper helper = new JoystickHelper(v, this);
         return v;
+    }
+
+    public void cameraOn(boolean on) {
+        if(on) {
+            logo.setVisibility(View.INVISIBLE);
+        } else {
+            logo.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setBground(BitmapDrawable image) {
+        bground.setBackground(image);
     }
 }

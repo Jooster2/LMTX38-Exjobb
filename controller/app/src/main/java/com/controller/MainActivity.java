@@ -2,11 +2,23 @@ package com.controller;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import fragments.BigCarFragment;
@@ -20,6 +32,8 @@ public class MainActivity extends Activity {
     int lastFragment;
     boolean isActivated;
     WifiHelper wHelper;
+
+    private String TAG = "mainactivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,11 +78,28 @@ public class MainActivity extends Activity {
         switcher.switchTo(4); // Switch to menu_fragment.
     }
     public boolean getActivated(){return isActivated;}
+
     public void toggleSpecial(View v){
-        if (isActivated)
+        if (isActivated) {
             isActivated = false;
-        else
+            //If fragment with camera, replace the logo
+            Fragment currentFragment = switcher.getCurrentFragment();
+            if(currentFragment instanceof CamCarFragment) {
+                ((CamCarFragment) currentFragment).cameraOn(false);
+            } else if(currentFragment instanceof BigCarFragment) {
+                ((BigCarFragment) currentFragment).cameraOn(false);
+            }
+        }
+        else {
             isActivated = true;
+            //If fragment with camera, clear out the logo
+            Fragment currentFragment = switcher.getCurrentFragment();
+            if(currentFragment instanceof CamCarFragment) {
+                ((CamCarFragment) currentFragment).cameraOn(true);
+            } else if(currentFragment instanceof BigCarFragment) {
+                ((BigCarFragment) currentFragment).cameraOn(true);
+            }
+        }
     }
 
     public void switchToCar(View v)
@@ -188,8 +219,18 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void receiveDataFromWifi (Object o)
-    {
+    public void receiveImageDataFromWifi (byte[] imageData) {
+        Bitmap image = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+        BitmapDrawable img = new BitmapDrawable(image);
+        Fragment currentFragment = switcher.getCurrentFragment();
+
+        if(currentFragment instanceof CamCarFragment) {
+            ((CamCarFragment) currentFragment).setBground(img);
+        } else if(currentFragment instanceof BigCarFragment) {
+            ((BigCarFragment) currentFragment).setBground(img);
+        } else {
+            Log.i(TAG, "ERROR: image data received, but fragment is neither camcar nor bigcar");
+        }
 
     }
 
@@ -203,6 +244,18 @@ public class MainActivity extends Activity {
         if (switcher.getCurrentFragment() instanceof MenuFragment)
         {
             goBack(null);
+        }
+    }
+
+    public void testBgroundSetting(View v) {
+        try {
+            File file = new File("imgtest.txt");
+            DataInputStream dis = new DataInputStream(new FileInputStream(file));
+            byte[] data = new byte[(int)file.length()];
+            dis.read(data, 0, (int)file.length());
+            receiveImageDataFromWifi(data);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
