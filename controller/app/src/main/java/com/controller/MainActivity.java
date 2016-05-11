@@ -2,23 +2,35 @@ package com.controller;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Base64;
+import android.util.Base64InputStream;
 import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FilterInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import fragments.BigCarFragment;
@@ -32,6 +44,12 @@ public class MainActivity extends Activity {
     int lastFragment;
     boolean isActivated;
     WifiHelper wHelper;
+
+    //private final static Uri BIG_CAR_URI = Uri.parse("http://bigcar:8080/stream");
+
+    private Uri BIG_CAR_URI;
+
+
 
     private String TAG = "mainactivity";
     @Override
@@ -50,6 +68,8 @@ public class MainActivity extends Activity {
         fragments.add(new BigCarFragment());// Place: 3
         fragments.add(new MenuFragment());// Place: 4
 
+        File extStore = Environment.getExternalStorageDirectory();
+        BIG_CAR_URI = Uri.parse(extStore.getAbsolutePath() + "/Download/bbb_mod.avi");
         /*----------------------------------------*/
 
 
@@ -88,6 +108,7 @@ public class MainActivity extends Activity {
                 ((CamCarFragment) currentFragment).cameraOn(false);
             } else if(currentFragment instanceof BigCarFragment) {
                 ((BigCarFragment) currentFragment).cameraOn(false);
+                ((BigCarFragment) currentFragment).streamVideo(null, false);
             }
         }
         else {
@@ -98,6 +119,7 @@ public class MainActivity extends Activity {
                 ((CamCarFragment) currentFragment).cameraOn(true);
             } else if(currentFragment instanceof BigCarFragment) {
                 ((BigCarFragment) currentFragment).cameraOn(true);
+                ((BigCarFragment) currentFragment).streamVideo(BIG_CAR_URI, true);
             }
         }
     }
@@ -136,7 +158,7 @@ public class MainActivity extends Activity {
             }
             else if (rG.getCheckedRadioButtonId() == R.id.radioButton_big)
             {
-                wHelper.connectTo("bigcar");
+                //wHelper.connectTo("bigcar");
                 switcher.switchTo(3);
 
             }
@@ -219,19 +241,11 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void receiveImageDataFromWifi (byte[] imageData) {
-        Bitmap image = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
-        BitmapDrawable img = new BitmapDrawable(image);
+    public void streamFromWifi (Uri uri, boolean start) {
         Fragment currentFragment = switcher.getCurrentFragment();
-
-        if(currentFragment instanceof CamCarFragment) {
-            ((CamCarFragment) currentFragment).setBground(img);
-        } else if(currentFragment instanceof BigCarFragment) {
-            ((BigCarFragment) currentFragment).setBground(img);
-        } else {
-            Log.i(TAG, "ERROR: image data received, but fragment is neither camcar nor bigcar");
+        if(currentFragment instanceof BigCarFragment) {
+            ((BigCarFragment) currentFragment).streamVideo(uri, start);
         }
-
     }
 
     public int getLastFragment ()
@@ -246,17 +260,4 @@ public class MainActivity extends Activity {
             goBack(null);
         }
     }
-
-    public void testBgroundSetting(View v) {
-        try {
-            File file = new File("imgtest.txt");
-            DataInputStream dis = new DataInputStream(new FileInputStream(file));
-            byte[] data = new byte[(int)file.length()];
-            dis.read(data, 0, (int)file.length());
-            receiveImageDataFromWifi(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

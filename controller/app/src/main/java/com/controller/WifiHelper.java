@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,7 +27,7 @@ public class WifiHelper {
     WifiManager wManager;
     MainActivity myActivity;
     ActiveThread thread;
-    PassiveThread passiveThread;
+    StreamerThread streamerThread;
     ArrayBlockingQueue data;
     private boolean listenForConnections = true;
 
@@ -63,14 +64,14 @@ public class WifiHelper {
         }
     }
 
-    public void startPassive() {
-        passiveThread = new PassiveThread(thread.getSocket(), myActivity);
-        passiveThread.start();
+    public void startStream() {
+        streamerThread = new StreamerThread(thread.getSocket().getInetAddress());
+        streamerThread.start();
     }
 
-    public void stopPassive() {
-        passiveThread.stopThread();
-    }
+    /*public void stopStream() {
+        streamerThread.stopThread();
+    }*/
 
     /**
      * This thread can connect to a peer, exchange data, and send it to MainActivity
@@ -159,51 +160,17 @@ public class WifiHelper {
         }
     }
 
-    class PassiveThread extends Thread {
-        private Socket socket = null;
-        private MainActivity mainActivity;
-        private boolean connected = false;
+    class StreamerThread extends Thread {
+        private InetAddress ipAddress;
 
-        public PassiveThread(Socket socket, MainActivity activity) {
-            this.socket = socket;
-            mainActivity = activity;
+        public StreamerThread(InetAddress ipAddress) {
+            this.ipAddress = ipAddress;
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public void run() {
-            try {
-                connected = true;
-                DataInputStream dis = new DataInputStream(socket.getInputStream());
 
-                while(true) {
-                    int length = dis.readInt();
-                    byte[] imageData = new byte[length];
-                    dis.read(imageData, 0, length);
-
-                    final byte[] imgData = imageData;
-                    mainActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mainActivity.receiveImageDataFromWifi(imgData);
-                        }
-                    });
-
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        public void stopThread() {
-            try {
-                if (socket != null) {
-                    socket.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                interrupt();
-            }
         }
     }
 }

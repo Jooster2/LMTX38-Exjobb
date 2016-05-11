@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    tools:context="com.controller.MainActivity"
-                                                 android:background="@drawable/backround7">
+    tools:context="com.controller.MainActivity">
+    <!--android:background="@drawable/backround7"-->
 
 
     <include layout="@layout/content_main" />
