@@ -45,9 +45,9 @@ public class MainActivity extends Activity {
     boolean isActivated;
     WifiHelper wHelper;
 
-    //private final static Uri BIG_CAR_URI = Uri.parse("http://bigcar:8080/stream");
+    private final static Uri BIG_CAR_URI = Uri.parse("http://bigcar:8080/stream");
 
-    private Uri BIG_CAR_URI;
+    //private Uri BIG_CAR_URI;
 
 
 
@@ -68,8 +68,8 @@ public class MainActivity extends Activity {
         fragments.add(new BigCarFragment());// Place: 3
         fragments.add(new MenuFragment());// Place: 4
 
-        File extStore = Environment.getExternalStorageDirectory();
-        BIG_CAR_URI = Uri.parse(extStore.getAbsolutePath() + "/Download/bbb_mod.avi");
+        //File extStore = Environment.getExternalStorageDirectory();
+        //BIG_CAR_URI = Uri.parse(extStore.getAbsolutePath() + "/Download/bbb_mod.avi");
         /*----------------------------------------*/
 
 
@@ -158,7 +158,7 @@ public class MainActivity extends Activity {
             }
             else if (rG.getCheckedRadioButtonId() == R.id.radioButton_big)
             {
-                //wHelper.connectTo("bigcar");
+                wHelper.connectTo("bigcar");
                 switcher.switchTo(3);
 
             }
@@ -173,7 +173,7 @@ public class MainActivity extends Activity {
 
     }
 
-    public void sendToCar (String dataFrom , double data)
+    public void sendToCar (String dataFrom, double data)
     {
         if(dataFrom == "HORIZONTAL")
         {
