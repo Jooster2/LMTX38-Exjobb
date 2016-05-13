@@ -27,7 +27,6 @@ public class WifiHelper {
     WifiManager wManager;
     MainActivity myActivity;
     ActiveThread thread;
-    StreamerThread streamerThread;
     ArrayBlockingQueue data;
     private boolean listenForConnections = true;
 
@@ -63,16 +62,6 @@ public class WifiHelper {
             e.printStackTrace();
         }
     }
-
-    public void startStream() {
-        streamerThread = new StreamerThread(thread.getSocket().getInetAddress());
-        streamerThread.start();
-    }
-
-    /*public void stopStream() {
-        streamerThread.stopThread();
-    }*/
-
     /**
      * This thread can connect to a peer, exchange data, and send it to MainActivity
      */
@@ -116,6 +105,24 @@ public class WifiHelper {
                             oos.print(temp);
                             Log.i("myTag", "" + temp);
                         } else if (temp < 1000 && temp > 100) {
+                            if (temp == 512) {
+                                new Thread(new Runnable(){
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            sleep(1000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        myActivity.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                myActivity.startCamera();
+                                            }
+                                        });
+                                    }
+                                }).start();
+                            }
                             oos.print(3);
                             oos.print(temp);
                             Log.i("myTag", "" + temp);
@@ -157,20 +164,6 @@ public class WifiHelper {
             } finally {
                 interrupt();
             }
-        }
-    }
-
-    class StreamerThread extends Thread {
-        private InetAddress ipAddress;
-
-        public StreamerThread(InetAddress ipAddress) {
-            this.ipAddress = ipAddress;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public void run() {
-
         }
     }
 }

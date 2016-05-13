@@ -32,6 +32,8 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import fragments.BigCarFragment;
 import fragments.CamCarFragment;
@@ -45,13 +47,10 @@ public class MainActivity extends Activity {
     boolean isActivated;
     WifiHelper wHelper;
 
-    private final static Uri BIG_CAR_URI = Uri.parse("http://bigcar:8080/stream");
-
-    //private Uri BIG_CAR_URI;
-
-
-
+    private final static Uri CAM_CAR_URI = Uri.parse("rtsp://camcar:2345/stream.sdp");
+    private final static Uri BIG_CAR_URI = Uri.parse("rtsp://bigcar:2345/stream.sdp");
     private String TAG = "mainactivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +67,6 @@ public class MainActivity extends Activity {
         fragments.add(new BigCarFragment());// Place: 3
         fragments.add(new MenuFragment());// Place: 4
 
-        //File extStore = Environment.getExternalStorageDirectory();
-        //BIG_CAR_URI = Uri.parse(extStore.getAbsolutePath() + "/Download/bbb_mod.avi");
         /*----------------------------------------*/
 
 
@@ -106,6 +103,7 @@ public class MainActivity extends Activity {
             Fragment currentFragment = switcher.getCurrentFragment();
             if(currentFragment instanceof CamCarFragment) {
                 ((CamCarFragment) currentFragment).cameraOn(false);
+                ((CamCarFragment) currentFragment).streamVideo(null, false);
             } else if(currentFragment instanceof BigCarFragment) {
                 ((BigCarFragment) currentFragment).cameraOn(false);
                 ((BigCarFragment) currentFragment).streamVideo(null, false);
@@ -116,10 +114,9 @@ public class MainActivity extends Activity {
             //If fragment with camera, clear out the logo
             Fragment currentFragment = switcher.getCurrentFragment();
             if(currentFragment instanceof CamCarFragment) {
-                ((CamCarFragment) currentFragment).cameraOn(true);
+                wHelper.setNextData((short)512);
             } else if(currentFragment instanceof BigCarFragment) {
-                ((BigCarFragment) currentFragment).cameraOn(true);
-                ((BigCarFragment) currentFragment).streamVideo(BIG_CAR_URI, true);
+                wHelper.setNextData((short)512);
             }
         }
     }
@@ -128,6 +125,7 @@ public class MainActivity extends Activity {
     {
         if (findViewById(R.id.cam_button) == v)
         {
+            wHelper.connectTo("camcar");
             switcher.switchTo(1);
         }
         else if (findViewById(R.id.grab_button) == v)
@@ -148,6 +146,7 @@ public class MainActivity extends Activity {
             RadioGroup rG = (RadioGroup)findViewById(R.id.radioGroup);
             if (rG.getCheckedRadioButtonId() == R.id.radioButton_Cam)
             {
+                wHelper.connectTo("camcar");
                 switcher.switchTo(1);
             }
             else if (rG.getCheckedRadioButtonId() == R.id.radioButton_grab)
@@ -241,10 +240,34 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void streamFromWifi (Uri uri, boolean start) {
+    public void startCamera() {
+        //If fragment with camera, clear out the logo
         Fragment currentFragment = switcher.getCurrentFragment();
-        if(currentFragment instanceof BigCarFragment) {
-            ((BigCarFragment) currentFragment).streamVideo(uri, start);
+        if(currentFragment instanceof CamCarFragment) {
+            ((CamCarFragment) currentFragment).cameraOn(true);
+            ((CamCarFragment) currentFragment).streamVideo(CAM_CAR_URI, true);
+
+        } else if(currentFragment instanceof BigCarFragment) {
+            ((BigCarFragment) currentFragment).cameraOn(true);
+            ((BigCarFragment) currentFragment).streamVideo(BIG_CAR_URI, true);
+        }
+    }
+
+    public void resumeVideo(boolean resume) {
+        if(resume) {
+            Fragment currentFragment = switcher.getCurrentFragment();
+            if(currentFragment instanceof CamCarFragment) {
+                ((CamCarFragment) currentFragment).resumeVideo();
+            } else if (currentFragment instanceof BigCarFragment) {
+                //((BigCarFragment) currentFragment).resumeVideo();
+            }
+        } else {
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    resumeVideo(true);
+                }
+            }, 10000);
         }
     }
 
