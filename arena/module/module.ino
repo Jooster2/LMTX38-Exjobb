@@ -1,7 +1,6 @@
 #include <Servo.h>
 
 #define outA 10
-#define outB 11
 
 class Activator {
   public:
@@ -18,7 +17,8 @@ class Activator {
 
 Activator A(5);
 Activator B(6);
-Activator list[] = {A, B};
+Activator C(7);
+Activator list[] = {A, B, C};
 Servo servo;
 
 bool triggered = false;
@@ -32,13 +32,13 @@ void setup() {
 void loop() {
   if(checkActivators()) {
     if(!triggered) {
-      Serial.println("Triggering");
+      //Serial.println("Triggering");
       triggerModule();
       triggered = true;
     }
   } else {
     if(triggered) {
-      Serial.println("Reverting");
+      //Serial.println("Reverting");
       revertModule();
       triggered = false;
     }
@@ -68,8 +68,6 @@ void revertModule() {
 bool checkActivators() {
   bool results = true;
   for(int i = 0; i < sizeof(list) / sizeof(*list); i++) {
-    Serial.print("Results: ");
-    Serial.println(results);
     results &= list[i].active();
   }
   return results;
