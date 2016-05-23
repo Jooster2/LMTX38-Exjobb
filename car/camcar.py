@@ -26,7 +26,7 @@ class CamCar(Car):
         This is received from wifi_helper. Max speed is 480 which is forward,
         -480 is reverse. 
         """
-        self.speed = int((float(speed)/100) * MAX_SPEED)
+        self.speed = int((float(speed)/100) * -MAX_SPEED)
         motors.motor1.setSpeed(self.speed)
 
     def turn(self, direction, msg):
