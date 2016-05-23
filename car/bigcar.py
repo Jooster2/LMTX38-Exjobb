@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 
 from pololu_drv8835_rpi import motors, MAX_SPEED
 from car import Car
+import wiringpi
 import wifihelper
 
 class BigCar(Car):
