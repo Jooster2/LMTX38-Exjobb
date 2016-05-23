@@ -3,6 +3,8 @@ import syslog
 from threading import Thread
 from threading import Lock
 import collections
+import wiringpi
+import urllib2
 class wifi_helper:
     """
     Handles the WiFI connection, receiving and sending data. 
@@ -11,17 +13,29 @@ class wifi_helper:
     """
     
     def __init__ (self):
+        wiringpi.pinMode(19, wiringpi.GPIO.OUTPUT)
         self.start_thread()
     def start_thread(self):
         self.thread = Passive_thread()
-        #self.thread.daemon = True
+        self.thread.daemon = True
         self.thread.set_wh(self)
         self.active = Active_thread()
-        #self.active.daemon = True
+        self.active.daemon = True
         self.active.start()
         self.thread.start()
 
+"""
 
+
+
+def internet_on():
+    try:
+        print "INTERNET ON"
+        answer = urllib2.urlopen('http://74.125.228.100', timeout=1)
+        return True
+    except urllib.URLError as err: pass
+    return False
+"""
 class Passive_thread(Thread):
     def __init__ (self):
         Thread.__init__(self)
@@ -42,12 +56,19 @@ class Passive_thread(Thread):
             s.listen(5)
             while True:
                 syslog.syslog (syslog.LOG_INFO,"In while, before socket accept")
+                wiringpi.digitalWrite(19, 1)
+                """
+
+                if internet_on():
+                    wiringpi.digitalWrite(19, 1)
+                    """
                 c, addr = s.accept()
                 print ("In while, socket accepted")
                 connected = True
                 #'c' is a newly create socket usable for write
                 #and read on connection. addr is client addr,
                 #bound to socket.
+                wiringpi.digitalWrite(19, 0)
                 syslog.syslog (syslog.LOG_INFO,'Got connection from '+ str(addr))
                 self.wh.active.set_connection (c)
                 while connected:
@@ -66,6 +87,9 @@ class Passive_thread(Thread):
                         elif msg_size == 3:
                             msg = int(c.recv(3))
                             print ("When size is 3: ", msg)
+                        elif msg_size == 4:
+                            msg = int (c.recv(4))
+                            print ("When size is 4: ", msg)
                     if connected:
                         self.data.append(int (msg))
                         #print ("msg received")
