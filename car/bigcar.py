@@ -1,7 +1,5 @@
 from time import sleep
 from syslog import syslog
-from threading import Lock
-from time import sleep
 import RPi.GPIO as GPIO
 
 from pololu_drv8835_rpi import motors, MAX_SPEED
@@ -24,6 +22,25 @@ class BigCar(Car):
         self.pwm_pan.start(5)
         self.pwm_tilt = GPIO.PWM(26,50)
         self.pwm_tilt.start(5)
+
+    def special(self, msg):
+        """Activate the turret."""
+        if  1024 > msg >= 896:
+            self.tilt("LEFT", msg)
+            motors.motor2.setSpeed(MAX_SPEED)
+        
+        elif 896 > msg >= 768:
+            self.pan("LEFT",msg)
+            motors.motor2.setSpeed(MAX_SPEED)
+
+        elif 768 > msg >= 640:
+            self.tilt("RIGHT", msg)
+            motors.motor2.setSpeed(MAX_SPEED)
+
+        elif 640 > msg >= 512:
+            self.pan("RIGHT", msg)
+            motors.motor2.setSpeed(MAX_SPEED)
+        return 0
 
     def drive(self, speed):
         """
@@ -77,22 +94,3 @@ class BigCar(Car):
             msg = float (msg)
             self.pwm_tilt.ChangeDutyCycle(7.25- (((msg-128)/100)*3.8))
 
-    def special(self, msg):
-        """Handles the special capability."""
-        if  1024 > msg >= 896:
-            self.tilt("LEFT", msg)
-            motors.motor2.setSpeed(MAX_SPEED)
-        
-        elif 896 > msg >= 768:
-            self.pan("LEFT",msg)
-            motors.motor2.setSpeed(MAX_SPEED)
-
-        elif 768 > msg >= 640:
-            self.tilt("RIGHT", msg)
-            motors.motor2.setSpeed(MAX_SPEED)
-
-        elif 640 > msg >= 512:
-            self.pan("RIGHT", msg)
-            motors.motor2.setSpeed(MAX_SPEED)
-
-        return 0
