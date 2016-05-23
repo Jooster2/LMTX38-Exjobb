@@ -36,7 +36,7 @@ class BigCar(Car):
         print ("IN DRIVE, AFTER CALC", self.speed)
         motors.motor1.setSpeed(self.speed)
 
-    def turn(self,direction, msg):
+    def turn(self, direction, msg):
         """
         Turns the car to either left or right
         Called from wifihelper      

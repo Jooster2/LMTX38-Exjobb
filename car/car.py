@@ -26,7 +26,7 @@ class Car:
         if msg >= 512:
             msg = special(msg)
         elif  512 > msg >= 384:
-            self.turn ("LEFT",msg)
+            self.turn ("LEFT", msg)
             motors.motor2.setSpeed(0)
         elif 384 > msg >= 256:
           #  print ("When size is 2 we end up here: ")
