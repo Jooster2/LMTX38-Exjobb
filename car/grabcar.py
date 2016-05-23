@@ -20,7 +20,6 @@ class GrabCar(Car):
         return msg
 
     def deactivate_special(self):
-        syslog.syslog(syslog.LOG_INFO, "Magnet deactivated")
         pass
 
     def drive(self, speed):

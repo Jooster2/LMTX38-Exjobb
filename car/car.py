@@ -31,9 +31,9 @@ class Car:
         """
         msg = int (msg)
         if msg > 512:
-            msg = special(msg)
+            msg = self.special(msg)
         else:
-            deactivate_special()
+            self.deactivate_special()
 
 
 
