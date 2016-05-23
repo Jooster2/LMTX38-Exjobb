@@ -1,11 +1,10 @@
 from time import sleep
 import syslog
-import RPi.GPIO as GPIO
 
 from pololu_drv8835_rpi import motors, MAX_SPEED
 from car import Car
+import wiringpi
 import wifihelper
-from camera import Camera
 
 class CamCar(Car):
 

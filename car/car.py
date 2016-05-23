@@ -8,6 +8,7 @@ import wifihelper
 import wiringpi
 from pololu_drv8835_rpi import motors, MAX_SPEED
 
+
 class Car:
     """
     Class that handles the driving of the car and its special 
@@ -56,10 +57,16 @@ def run(car):
 if __name__ == "__main__":
     hostname = socket.gethostname()
     if hostname == "bigcar":
+        syslog.syslog(syslog.LOG_INFO, "Car is bigcar")
+        from bigcar import BigCar
         car = BigCar()
     elif hostname == "grabcar":
+        syslog.syslog(syslog.LOG_INFO, "Car is grabcar")
+        from grabcar import GrabCar
         car = GrabCar()
     elif hostname == "camcar":
+        syslog.syslog(syslog.LOG_INFO, "Car is camcar")
+        from camcar import CamCar
         car = CamCar()
     else:
         raise ValueError("Hostname is wrong use one of \
