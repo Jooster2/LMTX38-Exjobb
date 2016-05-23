@@ -19,6 +19,10 @@ class GrabCar(Car):
         #TODO implement magnet usage
         return msg
 
+    def deactivate_special(self):
+        syslog.syslog(syslog.LOG_INFO, "Magnet deactivated")
+        pass
+
     def drive(self, speed):
         """
             Sets the direction and speed that the car should be driven.

@@ -20,6 +20,10 @@ class CamCar(Car):
         #TODO implement camera usage
         return msg
 
+    def deactivate_special(self):
+        syslog.syslog(syslog.LOG_INFO, "Camera deactivated")
+        pass
+
     def drive(self, speed):
         """
             Sets the direction and speed that the car should be driven.

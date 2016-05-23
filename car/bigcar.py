@@ -45,6 +45,10 @@ class BigCar(Car):
             motors.motor2.setSpeed(MAX_SPEED)
         return 0
 
+    def deactivate_special(self):
+        syslog.syslog(syslog.LOG_INFO, "Turret deactivated")
+        motors.motor2.setSpeed(0)
+
     def drive(self, speed):
         """
             Sets the direction and speed that the car should be driven.

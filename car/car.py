@@ -20,6 +20,10 @@ class Car:
                 method 'special'.")
         raise NotImplementedError("Method not in subclass.")
 
+    def deactivate_special(self):
+        syslog.syslog(syslog.LOG_ERR, "Calling 'abstract' \
+                method 'deactivate_special'.")
+        raise NotImplementedError("Method not in subclass.")
         
     def receive_data (self, msg):
         """
@@ -28,6 +32,10 @@ class Car:
         msg = int (msg)
         if msg > 512:
             msg = special(msg)
+        else:
+            deactivate_special()
+
+
 
         if  512 > msg >= 384:
             self.turn ("LEFT", msg)
