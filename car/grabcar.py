@@ -1,5 +1,5 @@
 from time import sleep
-from syslog import syslog
+import syslog
 import RPi.GPIO as GPIO
 
 from pololu_drv8835_rpi import motors, MAX_SPEED
@@ -8,12 +8,15 @@ import wifihelper
 
 class GrabCar(Car):
     def __init__(self):
+        syslog.syslog(syslog.LOG_INFO, "Initializing GrabCar")
         self.wh = wifihelper.wifi_helper ()
         wiringpi.pinMode(3, wiringpi.GPIO.OUTPUT)
         wiringpi.digitalWrite (3,1)
 
     def special(self, msg):
         """Activate the magnet."""
+        syslog.syslog(syslog.LOG_INFO, "Magnet activated")
+        #TODO implement magnet usage
         return msg
 
     def drive(self, speed):

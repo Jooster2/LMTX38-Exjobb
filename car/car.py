@@ -1,7 +1,7 @@
 #!/usr/bin/python2
 
 from time import sleep
-from syslog import syslog
+import syslog
 import socket
 
 import wifihelper
@@ -15,6 +15,8 @@ class Car:
     """
         
     def special(self, msg):
+        syslog.syslog(syslog.LOG_ERR, "Calling 'abstract' \
+                method 'special'.")
         raise NotImplementedError("Method not in subclass.")
 
         
@@ -29,7 +31,6 @@ class Car:
         if  512 > msg >= 384:
             self.turn ("LEFT", msg)
         elif 384 > msg >= 256:
-          #  print ("When size is 2 we end up here: ")
             self.drive (-(msg-256))
         elif 256 > msg >= 129:
             self.turn ("RIGHT", msg)
@@ -37,7 +38,6 @@ class Car:
             self.turn (1, msg)
         elif 128 > msg:
             self.drive (msg)
-           # print ("When size is 1 we end up here: ")
 
     def send_data(self,data):
         #active.add_element

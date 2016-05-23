@@ -1,5 +1,5 @@
 from time import sleep
-from syslog import syslog
+import syslog
 import RPi.GPIO as GPIO
 
 from pololu_drv8835_rpi import motors, MAX_SPEED
@@ -8,13 +8,16 @@ import wifihelper
 from camera import Camera
 
 class CamCar(Car):
+
     def __init__(self):
+        syslog.syslog(syslog.LOG_INFO, "Initializing CamCar")
         self.wh = wifihelper.wifi_helper ()
         wiringpi.pinMode(3, wiringpi.GPIO.OUTPUT)
         wiringpi.digitalWrite (3,1)
 
     def special(self, msg):
         """Activate the camera."""
+        syslog.syslog(syslog.LOG_INFO, "Camera activated")
         #TODO implement camera usage
         return msg
 

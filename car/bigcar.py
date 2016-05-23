@@ -1,5 +1,5 @@
 from time import sleep
-from syslog import syslog
+import syslog
 import RPi.GPIO as GPIO
 
 from pololu_drv8835_rpi import motors, MAX_SPEED
@@ -9,6 +9,7 @@ import wifihelper
 class BigCar(Car):
 
     def __init__(self):
+        syslog.syslog(syslog.LOG_INFO, "Initializing BigCar")
         self.wh = wifihelper.wifi_helper ()
         wiringpi.pinMode(3, wiringpi.GPIO.OUTPUT)
         wiringpi.digitalWrite (3,1)
@@ -25,6 +26,7 @@ class BigCar(Car):
 
     def special(self, msg):
         """Activate the turret."""
+        syslog.syslog(syslog.LOG_INFO, "Turret activated")
         if  1024 > msg >= 896:
             self.tilt("LEFT", msg)
             motors.motor2.setSpeed(MAX_SPEED)
@@ -49,7 +51,7 @@ class BigCar(Car):
         -480 is reverse. 
         """
         print ("IN DRIVE ", speed) 
-        self.speed =int((float(speed)/100) * MAX_SPEED)
+        self.speed = int((float(speed)/100) * MAX_SPEED)
         print ("IN DRIVE, AFTER CALC", self.speed)
         motors.motor1.setSpeed(self.speed)
 
