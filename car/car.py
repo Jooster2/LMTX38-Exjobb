@@ -21,14 +21,14 @@ class Car:
         """
         msg = int (msg)
         if  512 > msg >= 384:
-            self.turn ("LEFT")
+            self.turn ("LEFT", msg)
         elif 384 > msg >= 256:
           #  print ("When size is 2 we end up here: ")
             self.drive (-(msg-256))
         elif 256 > msg >= 129:
-            self.turn ("RIGHT")
+            self.turn ("RIGHT", msg)
         elif 128 == msg: 
-            self.turn (1)
+            self.turn (1, msg)
         elif 128 > msg:
             self.drive (msg)
            # print ("When size is 1 we end up here: ")

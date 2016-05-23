@@ -13,6 +13,10 @@ class GrabCar(Car):
         wiringpi.pinMode(3, wiringpi.GPIO.OUTPUT)
         wiringpi.digitalWrite (3,1)
 
+    def special(self, msg):
+        """Activate the magnet."""
+        return msg
+
     def drive(self, speed):
         """
             Sets the direction and speed that the car should be driven.
@@ -22,7 +26,7 @@ class GrabCar(Car):
         self.speed = int((float(speed)/100) * MAX_SPEED)
         motors.motor1.setSpeed(self.speed)
 
-    def turn(self, direction):
+    def turn(self, direction, msg):
         """
         Turns the car to either left or right
         Called from wifihelper
