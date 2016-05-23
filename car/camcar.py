@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO
 from pololu_drv8835_rpi import motors, MAX_SPEED
 from car import Car
 import wifihelper
+from camera import Camera
 
 class CamCar(Car):
     def __init__(self):
@@ -14,6 +15,7 @@ class CamCar(Car):
 
     def special(self, msg):
         """Activate the camera."""
+        #TODO implement camera usage
         return msg
 
     def drive(self, speed):
