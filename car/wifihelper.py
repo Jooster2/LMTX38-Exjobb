@@ -1,13 +1,13 @@
 import socket
 import syslog
-from threading import Thread
-from threading import Lock
+from threading import Lock, Thread
 import collections
 import wiringpi
 import urllib2
+
 class wifi_helper:
     """
-    Handles the WiFI connection, receiving and sending data. 
+    Handles the WiFi connection, receiving and sending data. 
     The data sent is feedback from device, the data received is
     instructions top the device.
     """
@@ -15,6 +15,7 @@ class wifi_helper:
     def __init__ (self):
         wiringpi.pinMode(19, wiringpi.GPIO.OUTPUT)
         self.start_thread()
+
     def start_thread(self):
         self.thread = Passive_thread()
         self.thread.daemon = True
@@ -24,22 +25,10 @@ class wifi_helper:
         self.active.start()
         self.thread.start()
 
-"""
-
-
-
-def internet_on():
-    try:
-        print "INTERNET ON"
-        answer = urllib2.urlopen('http://74.125.228.100', timeout=1)
-        return True
-    except urllib.URLError as err: pass
-    return False
-"""
 class Passive_thread(Thread):
     def __init__ (self):
         Thread.__init__(self)
-        print ("In init")
+        syslog.syslog(syslog.LOG_INFO, "Passive_thread init")
         self.has_data = False
         self.data = collections.deque()
     def set_wh (self,wh):
@@ -57,11 +46,6 @@ class Passive_thread(Thread):
             while True:
                 syslog.syslog (syslog.LOG_INFO,"In while, before socket accept")
                 wiringpi.digitalWrite(19, 1)
-                """
-
-                if internet_on():
-                    wiringpi.digitalWrite(19, 1)
-                    """
                 c, addr = s.accept()
                 print ("In while, socket accepted")
                 connected = True
@@ -78,6 +62,8 @@ class Passive_thread(Thread):
                         connected = False
                     else:
                         msg_size = int (msg_size)
+                        msg = int(c.recv(msg_size))
+                        """
                         if msg_size == 1:
                             msg = int(c.recv (1))
                             print ("When size is 1: ", msg)
@@ -90,16 +76,11 @@ class Passive_thread(Thread):
                         elif msg_size == 4:
                             msg = int (c.recv(4))
                             print ("When size is 4: ", msg)
+                        """
                     if connected:
-                        self.data.append(int (msg))
-                        #print ("msg received")
+                        self.data.append(int(msg))
                         self.has_data = True
-                #Receiving size should be fixed
-               # msg = s.recv()
-               # c.close()
-               # c.send ("HEJ".encode())
-                
-               # car.receive_data (msg)
+
         except socket.error as e:
             print(e)
 
@@ -107,7 +88,7 @@ class Passive_thread(Thread):
 class Active_thread(Thread):
     def __init__(self):
         Thread.__init__(self)
-        print ("In active init")
+        syslog.syslog(syslog.LOG_INFO, "Active_thread init")
         self.lock = Lock()
         self.queue = collections.deque()
     
@@ -125,21 +106,8 @@ class Active_thread(Thread):
     def run(self):
         while True:
             if self.queue:
-                print ("Removing items from queue")
+                # Removing items from queue
                 self.conn.send(self.queue.popleft().encode())
             else:
-                
-                print ("Empty queue")
                 self.lock.acquire()
                 
-                print ("Empty queue after lock")
-
-#wh = wifi_helper()
-#wh.thread.active.add_element(24)
-#wh.thread.active.add_element(54)
-#wh.thread.active.start_active()
-
-#while True:
- #   x = input()
-  #  wh.thread.active.add_element(x)
-    
